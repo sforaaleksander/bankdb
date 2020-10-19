@@ -16,7 +16,7 @@ country varchar(50) not null
 
 create table transaction_types (
 id serial primary key,
-name varchar(24) not null
+name varchar(24) not null unique
 );
 
 
@@ -69,7 +69,7 @@ CREATE TABLE accounts (
 
 CREATE TABLE address_types (
     id serial primary key,
-    name text NOT NULL
+    name text NOT NULL UNIQUE
 );
 
 
