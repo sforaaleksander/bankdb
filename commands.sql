@@ -40,14 +40,14 @@ transaction_type_id int not null
 
 
 create table transfers (
-transaction_id int not null,
+transaction_id int primary key not null,
 recipient_account_id int not null,
 title text not null
 );
 
 
 CREATE TABLE account_limits (
-    customer_id integer NOT NULL,
+    customer_id integer primary key NOT NULL,
     daily_withdraw_limit integer DEFAULT 1000 NOT NULL,
     daily_contactless_limit integer DEFAULT 1000 NOT NULL,
     daily_transactions_limit integer DEFAULT 10 NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE address_types (
 
 
 CREATE TABLE atm_transactions (
-    transaction_id integer NOT NULL,
+    transaction_id integer primary key NOT NULL,
     card_id integer NOT NULL,
     atm_id int NOT NULL
 );
@@ -87,11 +87,10 @@ CREATE TABLE bank_branches (
 
 
 CREATE TABLE card_payments (
-    transaction_id integer NOT NULL,
+    transaction_id integer primary key NOT NULL,
     card_id integer NOT NULL,
     recipient_name character varying(50) NOT NULL
 );
-
 
 
 
