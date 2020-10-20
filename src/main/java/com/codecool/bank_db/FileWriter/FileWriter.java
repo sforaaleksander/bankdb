@@ -2,18 +2,16 @@ package com.codecool.bank_db.FileWriter;
 
 import com.codecool.bank_db.tables.*;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 public class FileWriter {
     public void collectGeneratedInsertsToFile() throws IOException {
-        int customersNo = 500_000;
-        int atmsNo = 25_000;
-        int bankBranchesNo = 25_000;
-        int addressNo = 150_000;
+        int customersNo = 100;
+        int atmsNo = 25;
+        int bankBranchesNo = 25;
+        int addressNo = 150;
         MarketingConsentGenerator marketingConsentGenerator = new MarketingConsentGenerator();
         ProvinceGenerator provinceGenerator = new ProvinceGenerator();
         TransactionTypeGenerator transactionTypeGenerator = new TransactionTypeGenerator();
@@ -30,9 +28,6 @@ public class FileWriter {
                                         cardGenerator, accountGenerator};
 
         PrintWriter writer = new PrintWriter("sql_script.sql", StandardCharsets.UTF_8);
-//        writer.println("The first line");
-//        writer.println("The second line");
-
 
         for (DataGenerator generator : generators) {
             writer.print(generator.generate());

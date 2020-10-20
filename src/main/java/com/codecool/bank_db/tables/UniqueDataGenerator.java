@@ -12,8 +12,8 @@ public abstract class UniqueDataGenerator extends DataGenerator{
         createAvailableIndexes();
     }
 
-    private void createAvailableIndexes(){
-        for (int i=0; i < recordCount; i++) {
+    public void createAvailableIndexes(){
+        for (int i=1; i <= recordCount; i++) {
             availableIndexes.add(i);
         }
         Collections.shuffle(availableIndexes);
