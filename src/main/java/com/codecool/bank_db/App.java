@@ -5,7 +5,7 @@ import com.codecool.bank_db.tables.*;
 public class App {
     public static void main(String[] args) {
         new CardGenerator(1000);
-        new MarketinConsentsGenerator();
+        new MarketingConsentGenerator();
         new AddressTypeGenerator();
         new ProvinceGenerator();
         new AddressGenerator(1000);
