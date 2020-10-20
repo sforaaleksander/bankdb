@@ -29,12 +29,16 @@ public class AccountGenerator extends UniqueDataGenerator {
             isActive = random.nextInt(11) < 10 ? "true" : "false";
             if (!isActive.equals("true")) {
                 Timestamp dateClosed = generateDate();
-                String command = String.format("insert into accounts (%d, %d, %d, %d, %s, %s, %s);\n",
+                String command = String.format("insert into accounts " +
+                                " (customer_id, account_number, available_balance, booking_balance, date_opened, date_closed, is_active) " +
+                                " values (%d, %d, %d, %d, %s, %s, %s);\n",
                         customerId, accountNo, availableBalance, bookingBalance, dateOpened, dateClosed, isActive);
                 sb.append(command);
             } else {
-                String command = String.format("insert into accounts (%d, %d, %d, %d, %s, %s, %s);\n",
-                        customerId, accountNo, availableBalance, bookingBalance, dateOpened, null, isActive);
+                String command = String.format("insert into accounts " +
+                                " (customer_id, account_number, available_balance, booking_balance, date_opened, is_active) " +
+                                " (%d, %d, %d, %d, %s, %s);\n",
+                        customerId, accountNo, availableBalance, bookingBalance, dateOpened, isActive);
                 sb.append(command);
             }
         }
