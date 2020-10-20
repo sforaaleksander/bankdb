@@ -58,7 +58,7 @@ CREATE TABLE account_limits (
 CREATE TABLE accounts (
     id serial primary key,
     customer_id integer NOT NULL,
-    account_number character varying(26) NOT NULL,
+    account_number character varying(26) unique NOT NULL,
     available_balance bigint DEFAULT 0 NOT NULL,
     booking_balance bigint DEFAULT 0 NOT NULL,
     date_opened timestamp without time zone DEFAULT now() NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE atm_transactions (
 
 CREATE TABLE bank_branches (
     id serial primary key,
-    address_id integer NOT NULL
+    address_id integer unique NOT NULL
 );
 
 
@@ -99,9 +99,9 @@ CREATE TABLE customers (
     first_name character varying(26) NOT NULL,
     last_name character varying(26) NOT NULL,
     phone_number character varying(16) NOT NULL,
-    email character varying(26) NOT NULL,
+    email character varying(26) unique NOT NULL,
     password text NOT NULL,
-    pesel character varying(11) NOT NULL,
+    pesel character varying(11) unique NOT NULL,
     marketing_cons_id integer NOT NULL,
     bank_branch_id integer NOT NULL,
     is_active boolean default true not null
@@ -130,7 +130,7 @@ CREATE TABLE cards (
     pin_code varchar(4) not null ,
     start_date timestamp not null,
     expire_date timestamp not null,
-    card_number varchar(16) not null,
+    card_number varchar(16) unique not null,
     cvv_code varchar(3) not null,
     is_active boolean default false
 );
