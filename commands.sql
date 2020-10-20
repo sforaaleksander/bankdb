@@ -42,7 +42,7 @@ transaction_type_id int not null
 create table transfers (
 transaction_id int primary key not null,
 recipient_account_id int not null,
-title text not null
+title character varying(100) not null
 );
 
 
@@ -69,7 +69,7 @@ CREATE TABLE accounts (
 
 CREATE TABLE address_types (
     id serial primary key,
-    name text NOT NULL UNIQUE
+    name character varying(30) NOT NULL UNIQUE
 );
 
 
