@@ -1,8 +1,8 @@
 package com.codecool.bank_db.tables;
 
-public class ProvincesGenerator extends DataGenerator {
+public class ProvinceGenerator extends DataGenerator {
 
-    public ProvincesGenerator() {
+    public ProvinceGenerator() {
         super(16);
     }
 

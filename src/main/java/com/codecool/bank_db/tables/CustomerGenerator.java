@@ -5,10 +5,10 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class CustomersGenerator extends UniqueDataGenerator {
+public class CustomerGenerator extends UniqueDataGenerator {
     private ThreadLocalRandom random;
 
-    public CustomersGenerator(Integer recordCount) {
+    public CustomerGenerator(Integer recordCount) {
         super(recordCount);
         random = ThreadLocalRandom.current();
     }
@@ -35,8 +35,8 @@ public class CustomersGenerator extends UniqueDataGenerator {
                 ? Customers.MALE_SURNAMES[random.nextInt(0, Customers.MALE_SURNAMES.length)]
                 : Customers.FEMALE_SURNAMES[random.nextInt(0, Customers.FEMALE_SURNAMES.length)];
         password = generateRandomString(20);
-        marketing_cons_id = random.nextInt(1, MarketinConsentsGenerator.recordCount);
-        bank_branch_id = 0; // random.nextInt(1, BankBranchGenerator.recordCount); TODO uncomment this
+        marketing_cons_id = random.nextInt(1, MarketingConsentGenerator.recordCount);
+        bank_branch_id = random.nextInt(1, BankBranchGenerator.recordCount);
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);

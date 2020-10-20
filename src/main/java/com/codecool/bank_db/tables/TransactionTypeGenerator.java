@@ -1,8 +1,8 @@
 package com.codecool.bank_db.tables;
 
-public class TransactionTypesGenerator extends DataGenerator {
+public class TransactionTypeGenerator extends DataGenerator {
 
-    public TransactionTypesGenerator() {
+    public TransactionTypeGenerator() {
         super(3);
     }
 
