@@ -8,24 +8,26 @@ import java.nio.charset.StandardCharsets;
 
 public class FileWriter {
     public void collectGeneratedInsertsToFile() throws IOException {
-        int customersNo = 100;
-        int atmsNo = 25;
-        int bankBranchesNo = 25;
-        int addressNo = 150;
+        int customersNo = 10;
+        int atmsNo = 10;
+        int bankBranchesNo = 10;
+        int addressNo = 30;
         MarketingConsentGenerator marketingConsentGenerator = new MarketingConsentGenerator();
         ProvinceGenerator provinceGenerator = new ProvinceGenerator();
         TransactionTypeGenerator transactionTypeGenerator = new TransactionTypeGenerator();
         AddressTypeGenerator addressTypeGenerator = new AddressTypeGenerator();
 
-        AddressGenerator addressGenerator = new AddressGenerator(addressNo);
         BankBranchGenerator bankBranchGenerator = new BankBranchGenerator(bankBranchesNo);
         AtmGenerator atmGenerator = new AtmGenerator(atmsNo);
         CardGenerator cardGenerator = new CardGenerator(customersNo);
         AccountGenerator accountGenerator = new AccountGenerator(customersNo);
+        CustomerGenerator customerGenerator = new CustomerGenerator(customersNo);
+        CustomerAddressGenerator customerAddressGenerator = new CustomerAddressGenerator(customersNo);
+        AddressGenerator addressGenerator = new AddressGenerator(addressNo);
 
         DataGenerator[] generators = {marketingConsentGenerator, provinceGenerator, transactionTypeGenerator,
                                         addressTypeGenerator, addressGenerator, bankBranchGenerator, atmGenerator,
-                                        cardGenerator, accountGenerator};
+                                        customerGenerator, accountGenerator, cardGenerator, customerAddressGenerator};
 
         PrintWriter writer = new PrintWriter("sql_script.sql", StandardCharsets.UTF_8);
 

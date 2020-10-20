@@ -42,6 +42,7 @@ public class AccountGenerator extends UniqueDataGenerator {
                 sb.append(command);
             }
         }
+        CustomerGenerator.createAvailableIndexes();
         return sb.toString();
     }
 

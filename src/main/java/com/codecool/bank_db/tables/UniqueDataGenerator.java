@@ -12,7 +12,7 @@ public abstract class UniqueDataGenerator extends DataGenerator{
         createAvailableIndexes();
     }
 
-    public void createAvailableIndexes(){
+    public static void createAvailableIndexes(){
         for (int i=1; i <= recordCount; i++) {
             availableIndexes.add(i);
         }
