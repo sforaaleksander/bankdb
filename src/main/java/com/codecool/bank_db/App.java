@@ -12,6 +12,6 @@ public class App
 {
     public static void main( String[] args )
     {
-        new CardsGenerator(BigInteger.valueOf(1000)).getIndexesAvailable();
+        new CardsGenerator(1000).getIndexesAvailable();
     }
 }
