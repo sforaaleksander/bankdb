@@ -7,5 +7,9 @@ public abstract class DataGenerator {
         this.recordCount = recordCount;
     }
 
+    public Integer getRecordCount() {
+        return recordCount;
+    }
+
     public abstract String generate();
 }
