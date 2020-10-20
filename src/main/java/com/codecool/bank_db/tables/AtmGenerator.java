@@ -21,13 +21,16 @@ public class AtmGenerator extends DataGenerator {
                 break;
             }
             customerId = CustomersGenerator.availableIndexes.poll();
-            addressId = AddressGenerator.availableIndexes.poll();
+            if (AddressesGenerator.availableIndexes.isEmpty()){
+                break;
+            }
+            addressId = AddressesGenerator.availableIndexes.poll();
             isBankProperty = random.nextInt(10) < 9 ? "true" : "false";
             isActive = random.nextInt(10) < 9 ? "true" : "false";
             String command = String.format("insert into atms (%d, %d, %s, %s);\n",
                     customerId, addressId, isBankProperty, isActive);
             sb.append(command);
         }
-            return null;
+            return sb.toString();
     }
 }
