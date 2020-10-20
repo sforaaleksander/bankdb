@@ -17,14 +17,14 @@ public class AtmGenerator extends DataGenerator {
         String isBankProperty;
         String isActive;
         for (int i=0; i<recordCount;i++) {
-            if (CustomersGenerator.availableIndexes.isEmpty()){
+            if (CustomerGenerator.availableIndexes.isEmpty()){
                 break;
             }
-            customerId = CustomersGenerator.availableIndexes.poll();
-            if (AddressesGenerator.availableIndexes.isEmpty()){
+            customerId = CustomerGenerator.availableIndexes.poll();
+            if (AddressGenerator.availableIndexes.isEmpty()){
                 break;
             }
-            addressId = AddressesGenerator.availableIndexes.poll();
+            addressId = AddressGenerator.availableIndexes.poll();
             isBankProperty = random.nextInt(10) < 9 ? "true" : "false";
             isActive = random.nextInt(10) < 9 ? "true" : "false";
             String command = String.format("insert into atms (%d, %d, %s, %s);\n",

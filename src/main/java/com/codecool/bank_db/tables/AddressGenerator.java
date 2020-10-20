@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AddressesGenerator extends UniqueDataGenerator {
+public class AddressGenerator extends UniqueDataGenerator {
 
-    public AddressesGenerator(Integer recordCount) {
+    public AddressGenerator(Integer recordCount) {
         super(recordCount);
     }
 

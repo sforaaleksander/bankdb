@@ -1,8 +1,8 @@
 package com.codecool.bank_db.tables;
 
-public class AddressTypesGenerator extends DataGenerator {
+public class AddressTypeGenerator extends DataGenerator {
 
-    public AddressTypesGenerator() {
+    public AddressTypeGenerator() {
         super(2);
     }
 

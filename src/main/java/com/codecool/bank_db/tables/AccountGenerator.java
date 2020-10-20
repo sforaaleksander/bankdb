@@ -1,8 +1,8 @@
 package com.codecool.bank_db.tables;
 
-public class CardsGenerator extends UniqueDataGenerator {
+public class AccountGenerator extends UniqueDataGenerator {
 
-    public CardsGenerator(Integer recordCount) {
+    public AccountGenerator(Integer recordCount) {
         super(recordCount);
     }
 

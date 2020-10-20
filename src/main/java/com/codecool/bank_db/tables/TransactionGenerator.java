@@ -17,10 +17,10 @@ public class TransactionGenerator extends DataGenerator {
         int amount;
         int transactionType;
         for (int i=0; i<recordCount;i++) {
-            if (CustomersGenerator.availableIndexes.isEmpty()){
+            if (CustomerGenerator.availableIndexes.isEmpty()){
                 break;
             }
-            accountId = AccountsGenerator.availableIndexes.poll();
+            accountId = AccountGenerator.availableIndexes.poll();
             date = "";
             amount = random.nextInt(10_000_000);
             transactionType = random.nextInt(5);
