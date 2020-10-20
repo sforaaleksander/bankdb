@@ -104,7 +104,7 @@ CREATE TABLE customers (
     pesel character varying(11) NOT NULL,
     marketing_cons_id integer NOT NULL,
     bank_branch_id integer NOT NULL,
-    is_active default true not null
+    is_active boolean default true not null
 );
 
 
