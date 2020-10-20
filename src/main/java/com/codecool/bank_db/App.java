@@ -8,6 +8,8 @@ public class App {
         new MarketinConsentsGenerator();
         new AddressTypesGenerator();
         new ProvincesGenerator();
+        new AddressesGenerator(1000);
+
         CustomersGenerator customersGenerator = new CustomersGenerator(1000);
         AccountLimitsGenerator accountLimitsGenerator = new AccountLimitsGenerator(1000);
         System.out.println(accountLimitsGenerator.generate());
