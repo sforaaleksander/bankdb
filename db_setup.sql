@@ -7,7 +7,7 @@ id serial primary key,
 street varchar(50) not null,
 number varchar(50) not null,
 city varchar(50) not null,
-postcode varchar(6) not null,
+postcode varchar(5) not null,
 province_id int not null
 );
 
