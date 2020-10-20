@@ -56,6 +56,6 @@ public class AddressGenerator extends UniqueDataGenerator {
         String postcode = String.format("%010d", random.nextInt(1, 100_000));
 
         return String.format("insert into addresses(street, number, city, postcode, province_id)\n" +
-                "values (%s, %s, %s, %s, %s);", street, number, city, postcode, provinceId);
+                "values ('%s', '%s', '%s', '%s', %s);", street, number, city, postcode, provinceId);
     }
 }
