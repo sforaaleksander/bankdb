@@ -49,7 +49,7 @@ public class CardGenerator extends UniqueDataGenerator {
                 " values (%d, %d, %s, %d, %d)\n", transactionID, accountID, transactionDate, amount, transactionType);
         finalString.append(transactionString);
         if (transactionType == 1) {
-            finalString.append(createTransfer(transactionID, accountID));
+            finalString.append(createTransfer(transactionID, accountID, transactionDate));
         } else if (transactionType == 2) {
             finalString.append(createCardPayment(transactionID, pseudoCardSerial));
         } else if (transactionType == 3) {
@@ -71,21 +71,22 @@ public class CardGenerator extends UniqueDataGenerator {
     }
 
     private String generateRandomRecipient() {
-        return "";
+        int randomNr = getRandomNumberInRange(100_000, 999_999);
+        return String.format("random-recipient-%d", randomNr);
     }
 
-    private String createTransfer(int transactionID, int doNotUseThisAccountID) {
+    private String createTransfer(int transactionID, int doNotUseThisAccountID, String transactionDate) {
         int recipientAccountID = getRandomNumberInRange(1, AccountGenerator.recordCount);
         while (recipientAccountID != doNotUseThisAccountID) {
             recipientAccountID = getRandomNumberInRange(1, AccountGenerator.recordCount);
         }
-        String title = generateRandomTitle();// max 100 znakow
+        String title = generateRandomTitle(transactionDate, recipientAccountID, doNotUseThisAccountID, transactionID);// max 100 znakow
         return String.format("insert into transfers(transaction_id, recipient_account_id, title)" +
                 " values (%d, %d, %s)\n", transactionID, recipientAccountID, title);
     }
 
-    private String generateRandomTitle() {
-        return "";
+    private String generateRandomTitle(String transactionDate, int recipientAccountID, int doNotUseThisAccountID, int transactionID) {
+        return String.format("t-%s-from-%d-to-%d-on-%s", transactionID, doNotUseThisAccountID, recipientAccountID, transactionDate);
     }
 
     private int getAmount(int transactionType) {
