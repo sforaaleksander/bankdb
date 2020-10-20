@@ -8,10 +8,14 @@ street varchar(50) not null,
 number varchar(50) not null,
 city varchar(50) not null,
 postcode varchar(6) not null,
-province varchar(50) not null,
-country varchar(50) not null
+province_id int not null
 );
 
+
+create table provinces (
+id serial primary key,
+name varchar(26) unique not null
+);
 
 
 create table transaction_types (
@@ -206,6 +210,10 @@ alter table customers
 alter table customers_addresses
     add constraint customers_addresses_address_types_id_fk
         foreign key (address_type_id) references address_types;
+        
+alter table addresses
+    add constraint province_id_fk
+        foreign key (province_id) references provinces;
 
 alter table customers_addresses
     add constraint customers_addresses_addresses_id_fk
