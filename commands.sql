@@ -103,7 +103,8 @@ CREATE TABLE customers (
     password text NOT NULL,
     pesel character varying(11) NOT NULL,
     marketing_cons_id integer NOT NULL,
-    bank_branch_id integer NOT NULL
+    bank_branch_id integer NOT NULL,
+    is_active default true not null
 );
 
 
@@ -126,11 +127,11 @@ CREATE TABLE marketing_consents (
 CREATE TABLE cards (
     id serial primary key,
     account_id int not null,
-    pin_code int not null ,
+    pin_code varchar(4) not null ,
     start_date timestamp not null,
     expire_date timestamp not null,
     card_number varchar(16) not null,
-    cvv_code int not null,
+    cvv_code varchar(3) not null,
     is_active boolean default false
 );
 
@@ -213,10 +214,4 @@ alter table customers_addresses
 alter table customers_addresses
     add constraint customers_addresses_customers_id_fk
         foreign key (customer_id) references customers;
-
-
-
-
-
-
 
