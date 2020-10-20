@@ -1,15 +1,17 @@
 package com.codecool.bank_db;
 
-import com.codecool.bank_db.tables.AddressTypesGenerator;
-import com.codecool.bank_db.tables.CardsGenerator;
-import com.codecool.bank_db.tables.MarketinConsentsGenerator;
-import com.codecool.bank_db.tables.ProvincesGenerator;
+import com.codecool.bank_db.tables.*;
 
 public class App {
     public static void main(String[] args) {
-        new CardsGenerator(1000).getAvailableIndex();
+        new CardGenerator(1000);
         new MarketinConsentsGenerator();
-        new AddressTypesGenerator();
-        new ProvincesGenerator();
+        new AddressTypeGenerator();
+        new ProvinceGenerator();
+        new AddressGenerator(1000);
+
+        CustomerGenerator customersGenerator = new CustomerGenerator(1000);
+        AccountLimitGenerator accountLimitsGenerator = new AccountLimitGenerator(1000);
+        System.out.println(accountLimitsGenerator.generate());
     }
 }

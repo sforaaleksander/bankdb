@@ -6,19 +6,19 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.Set;
 
-public class CardsGenerator extends UniqueDataGenerator {
+public class CardGenerator extends UniqueDataGenerator {
     LinkedList<Long> setOfCardNumbers = createSetOfCardNumbers();
     Random r = new Random();
 
-    public CardsGenerator(Integer recordCount) {
+    public CardGenerator(Integer recordCount) {
         super(recordCount);
     }
 
     @Override
     public String generate() {
         StringBuilder mainString = new StringBuilder();
-        for (int i = 1; i <= AccountsGenerator.recordCount; i++) {
-            if (AccountsGenerator.availableIndexes.isEmpty()){
+        for (int i = 1; i <= AccountGenerator.recordCount; i++) {
+            if (AccountGenerator.availableIndexes.isEmpty()){
                 break;
             }
             int account_id = getAccountId();
@@ -37,7 +37,7 @@ public class CardsGenerator extends UniqueDataGenerator {
 
     private LinkedList<Long> createSetOfCardNumbers() {
         Set<Long> cardNumbers = new HashSet<>();
-        while (cardNumbers.size() <= AccountsGenerator.recordCount) {
+        while (cardNumbers.size() <= AccountGenerator.recordCount) {
             cardNumbers.add(getLongNumber());
         }
         return new LinkedList<>(cardNumbers);
@@ -66,7 +66,7 @@ public class CardsGenerator extends UniqueDataGenerator {
     }
 
     private int getAccountId() {
-        return AccountsGenerator.availableIndexes.poll();
+        return AccountGenerator.availableIndexes.poll();
     }
 
     private boolean getIsActive() {
