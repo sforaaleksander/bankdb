@@ -7,11 +7,13 @@ import java.util.Random;
 import java.util.Set;
 
 public class CardGenerator extends UniqueDataGenerator {
-    LinkedList<Long> setOfCardNumbers = createSetOfCardNumbers();
-    Random r = new Random();
+    Random r;
+    LinkedList<Long> setOfCardNumbers;
 
     public CardGenerator(Integer recordCount) {
         super(recordCount);
+        r = new Random();
+        setOfCardNumbers = createSetOfCardNumbers();
     }
 
     @Override
@@ -46,7 +48,7 @@ public class CardGenerator extends UniqueDataGenerator {
         String transactionString = String.format("insert into transactions(id, account_id, date, amount, transaction_type_id)" +
                 " values (%d, %d, %s, %d, %d)\n", transactionID, accountID, transactionDate, amount, transactionType);
         finalString.append(transactionString);
-        if (transactionType == 1){
+        if (transactionType == 1) {
             finalString.append(createTransfer(transactionID, accountID));
         } else if (transactionType == 2) {
             finalString.append(createCardPayment(transactionID, pseudoCardSerial));
@@ -74,7 +76,7 @@ public class CardGenerator extends UniqueDataGenerator {
 
     private String createTransfer(int transactionID, int doNotUseThisAccountID) {
         int recipientAccountID = getRandomNumberInRange(1, AccountGenerator.recordCount);
-        while (recipientAccountID != doNotUseThisAccountID){
+        while (recipientAccountID != doNotUseThisAccountID) {
             recipientAccountID = getRandomNumberInRange(1, AccountGenerator.recordCount);
         }
         String title = generateRandomTitle();// max 100 znakow
@@ -87,11 +89,11 @@ public class CardGenerator extends UniqueDataGenerator {
     }
 
     private int getAmount(int transactionType) {
-        if (transactionType != 3){
+        if (transactionType != 3) {
             return getRandomNumberInRange(1, 100000);
         }
         int randomAmount = getRandomNumberInRange(-10000, 10000);
-        return randomAmount - randomAmount%10;
+        return randomAmount - randomAmount % 10;
     }
 
     private String getTransactionDate(String startDate, String expireDate) {
