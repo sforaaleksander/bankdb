@@ -19,8 +19,4 @@ public abstract class UniqueDataGenerator extends DataGenerator{
         Collections.shuffle(availableIndexes);
 
     }
-
-    public Integer getAvailableIndex() {
-        return availableIndexes.poll();
-    };
 }
