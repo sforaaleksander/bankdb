@@ -23,10 +23,10 @@ public class AccountLimitsGenerator extends UniqueDataGenerator{
                 break;
             }
             customerId = CustomersGenerator.availableIndexes.poll();
-            daily_withdraw_limit = random.nextInt(10) * multipliers[random.nextInt()];
-            daily_contactless_limit = random.nextInt(10) * multipliers[random.nextInt()];
-            daily_transactions_limit = random.nextInt(10) * multipliers[random.nextInt()];
-            daily_card_payments_limit = random.nextInt(10) * multipliers[random.nextInt()];
+            daily_withdraw_limit = random.nextInt(10) * multipliers[random.nextInt(4)];
+            daily_contactless_limit = random.nextInt(10) * multipliers[random.nextInt(4)];
+            daily_transactions_limit = random.nextInt(10) * multipliers[random.nextInt(4)];
+            daily_card_payments_limit = random.nextInt(10) * multipliers[random.nextInt(4)];
 
             String command = String.format("insert into account_limits (%d, %d, %d, %d, %d);\n",
                                     customerId, daily_withdraw_limit, daily_contactless_limit,
