@@ -17,6 +17,5 @@ public abstract class UniqueDataGenerator extends DataGenerator{
             availableIndexes.add(i);
         }
         Collections.shuffle(availableIndexes);
-
     }
 }
