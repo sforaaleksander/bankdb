@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 public abstract class UniqueDataGenerator extends DataGenerator{
-    protected LinkedList<Integer> availableIndexes;
+    protected static LinkedList<Integer> availableIndexes;
 
     public UniqueDataGenerator(Integer recordCount) {
         super(recordCount);
@@ -17,10 +17,5 @@ public abstract class UniqueDataGenerator extends DataGenerator{
             availableIndexes.add(i);
         }
         Collections.shuffle(availableIndexes);
-
     }
-
-    public Integer getAvailableIndex() {
-        return availableIndexes.poll();
-    };
 }

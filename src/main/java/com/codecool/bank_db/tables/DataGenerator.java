@@ -1,14 +1,10 @@
 package com.codecool.bank_db.tables;
 
 public abstract class DataGenerator {
-    protected Integer recordCount;
+    static Integer recordCount;
 
-    public DataGenerator(Integer recordCount) {
-        this.recordCount = recordCount;
-    }
-
-    public Integer getRecordCount() {
-        return recordCount;
+    public DataGenerator(Integer count) {
+        recordCount = count;
     }
 
     public abstract String generate();
