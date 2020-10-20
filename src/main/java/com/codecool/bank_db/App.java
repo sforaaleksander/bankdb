@@ -1,9 +1,6 @@
 package com.codecool.bank_db;
 
-import com.codecool.bank_db.tables.AddressTypesGenerator;
-import com.codecool.bank_db.tables.CardsGenerator;
-import com.codecool.bank_db.tables.MarketinConsentsGenerator;
-import com.codecool.bank_db.tables.ProvincesGenerator;
+import com.codecool.bank_db.tables.*;
 
 public class App {
     public static void main(String[] args) {
@@ -11,5 +8,6 @@ public class App {
         new MarketinConsentsGenerator();
         new AddressTypesGenerator();
         new ProvincesGenerator();
+        new AddressesGenerator(1000);
     }
 }
