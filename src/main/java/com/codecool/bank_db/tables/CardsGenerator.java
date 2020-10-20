@@ -1,7 +1,5 @@
 package com.codecool.bank_db.tables;
 
-import java.util.*;
-
 public class CardsGenerator extends UniqueDataGenerator {
 
     public CardsGenerator(Integer recordCount) {
