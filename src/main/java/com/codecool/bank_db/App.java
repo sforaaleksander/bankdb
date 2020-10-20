@@ -1,11 +1,15 @@
 package com.codecool.bank_db;
 
-import com.codecool.bank_db.tables.*;
+import com.codecool.bank_db.FileWriter.FileWriter;
+
+import java.io.IOException;
 
 public class App {
     public static void main(String[] args) {
-        CustomerGenerator customerGenerator = new CustomerGenerator(1000);
-        AccountGenerator accountGenerator = new AccountGenerator(1000);
-        System.out.println(accountGenerator.generate());
+        try {
+            new FileWriter().collectGeneratedInsertsToFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
