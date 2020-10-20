@@ -14,7 +14,7 @@ public class FileWriter {
         int atmsNo = 25_000;
         int bankBranchesNo = 25_000;
         int addressNo = 150_000;
-        MarketingConsentsGenerator marketingConsentsGenerator = new MarketingConsentsGenerator();
+        MarketingConsentGenerator marketingConsentGenerator = new MarketingConsentGenerator();
         ProvinceGenerator provinceGenerator = new ProvinceGenerator();
         TransactionTypeGenerator transactionTypeGenerator = new TransactionTypeGenerator();
         AddressTypeGenerator addressTypeGenerator = new AddressTypeGenerator();
@@ -25,7 +25,7 @@ public class FileWriter {
         CardGenerator cardGenerator = new CardGenerator(customersNo);
         AccountGenerator accountGenerator = new AccountGenerator(customersNo);
 
-        DataGenerator[] generators = {marketingConsentsGenerator, provinceGenerator, transactionTypeGenerator,
+        DataGenerator[] generators = {marketingConsentGenerator, provinceGenerator, transactionTypeGenerator,
                                         addressTypeGenerator, addressGenerator, bankBranchGenerator, atmGenerator,
                                         cardGenerator, accountGenerator};
 

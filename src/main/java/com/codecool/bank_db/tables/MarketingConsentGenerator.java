@@ -1,8 +1,8 @@
 package com.codecool.bank_db.tables;
 
-public class MarketingConsentsGenerator extends DataGenerator {
+public class MarketingConsentGenerator extends DataGenerator {
 
-    public MarketingConsentsGenerator() {
+    public MarketingConsentGenerator() {
         super(4);
     }
 
