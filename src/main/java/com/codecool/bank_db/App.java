@@ -1,5 +1,7 @@
 package com.codecool.bank_db;
 
+import com.codecool.bank_db.tables.CardsGenerator;
+
 import java.math.BigInteger;
 
 /**

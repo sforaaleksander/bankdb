@@ -1,4 +1,4 @@
-package com.codecool.bank_db;
+package com.codecool.bank_db.tables;
 
 public class ProvincesGenerator extends DataGenerator {
     public ProvincesGenerator(Integer recordCount) {
