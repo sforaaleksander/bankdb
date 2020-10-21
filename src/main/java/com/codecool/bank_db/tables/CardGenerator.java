@@ -89,7 +89,7 @@ public class CardGenerator extends UniqueDataGenerator {
 
     private String createTransfer(int transactionID, int doNotUseThisAccountID, String transactionDate) {
         int recipientAccountID = getRandomNumberInRange(1, accountGenerator.getRecordCount());
-        while (recipientAccountID != doNotUseThisAccountID) {
+        while (recipientAccountID == doNotUseThisAccountID) {
             recipientAccountID = getRandomNumberInRange(1, accountGenerator.getRecordCount());
         }
         String title = generateRandomTitle(transactionDate, recipientAccountID, doNotUseThisAccountID, transactionID);// max 100 znakow

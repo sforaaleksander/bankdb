@@ -8,10 +8,10 @@ import java.nio.charset.StandardCharsets;
 
 public class FileWriter {
     public void collectGeneratedInsertsToFile() throws IOException {
-        int customersNo = 10;
-        int atmsNo = 10;
-        int bankBranchesNo = 10;
-        int addressNo = 30;
+        int customersNo = 100_000;
+        int atmsNo = 5_000;
+        int bankBranchesNo = 5_000;
+        int addressNo = 110_000;
         MarketingConsentGenerator marketingConsentGenerator = new MarketingConsentGenerator();
         ProvinceGenerator provinceGenerator = new ProvinceGenerator();
         TransactionTypeGenerator transactionTypeGenerator = new TransactionTypeGenerator();
