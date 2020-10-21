@@ -1,18 +1,22 @@
 package com.codecool.bank_db.tables;
 
+import com.codecool.bank_db.tables.name_generator.NameGenerator;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CustomerGenerator extends UniqueDataGenerator {
-    private ThreadLocalRandom random;
+    private final ThreadLocalRandom random;
+    private final NameGenerator nameGenerator;
     private MarketingConsentGenerator marketingConsentGenerator;
     private BankBranchGenerator bankBranchGenerator;
 
     public CustomerGenerator(Integer recordCount) {
         super(recordCount);
         random = ThreadLocalRandom.current();
+        nameGenerator = new NameGenerator();
     }
 
     public void setMarketingConsentGenerator(MarketingConsentGenerator marketingConsentGenerator) {
@@ -25,6 +29,10 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
     @Override
     public String generate() {
+//        nameGenerator.dropTables();
+//        nameGenerator.dropFunctions();
+        nameGenerator.createAndPopulateTablesAndFunctions();
+
         StringBuilder sb = new StringBuilder();
 
         Customers customers = new Customers(recordCount);
@@ -38,12 +46,12 @@ public class CustomerGenerator extends UniqueDataGenerator {
         String first_name, last_name, phone_number, email, password, pesel;
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
-        first_name = male // TODO use db to generate names
-                ? Customers.MALE_NAMES[random.nextInt(0, Customers.MALE_NAMES.length)]
-                : Customers.FEMALE_NAMES[random.nextInt(0, Customers.FEMALE_NAMES.length)];
+        first_name = male
+                ? nameGenerator.getRandomMaleFirstName(1000)
+                : nameGenerator.getRandomFemaleFirstName(1000);
         last_name = male
-                ? Customers.MALE_SURNAMES[random.nextInt(0, Customers.MALE_SURNAMES.length)]
-                : Customers.FEMALE_SURNAMES[random.nextInt(0, Customers.FEMALE_SURNAMES.length)];
+                ? nameGenerator.getRandomMaleLastName(10000)
+                : nameGenerator.getRandomFemaleLastName(10000);
         password = generateRandomString(20);
         marketing_cons_id = random.nextInt(1, marketingConsentGenerator.getRecordCount());
         bank_branch_id = random.nextInt(1, bankBranchGenerator.getRecordCount());
