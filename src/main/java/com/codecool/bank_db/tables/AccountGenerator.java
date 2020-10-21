@@ -52,10 +52,10 @@ public class AccountGenerator extends UniqueDataGenerator {
     }
 
     private long getBookingBalanceByAvailable(Random random, long availableBalance) {
-        boolean balancesAreEqual = random.nextInt(11) > 9;
+        boolean balancesAreEqual = random.nextInt(11) < 9;
         if (balancesAreEqual) return availableBalance;
-        long difference = availableBalance + (random.nextLong() % availableBalance);
-        return availableBalance + difference;
+        long difference = Math.abs(random.nextLong() % availableBalance);
+        return availableBalance - difference;
     }
 
     private long getAvailableBalance(Random random) {
