@@ -43,8 +43,10 @@ public class CardGenerator extends UniqueDataGenerator {
             String defaultString = String.format("insert into cards(account_id, pin_code, start_date, expire_date, card_number, cvv_code, is_active)" +
                     " values (%d, '%s', '%s', '%s', '%s', '%s', %b);\n", account_id, pin_code, start_date, expire_date, card_number, cvv_code, is_active);
             mainString.append(defaultString);
-            mainString.append(createTransactions(account_id, pseudoCardSerial, start_date, expire_date, transactionId));
-            transactionId++;
+            for (int i = 1; i < getRandomNumberInRange(5, 30); i++){
+                mainString.append(createTransactions(account_id, pseudoCardSerial, start_date, expire_date, transactionId));
+                transactionId++;
+            }
         }
         return mainString.toString();
     }
