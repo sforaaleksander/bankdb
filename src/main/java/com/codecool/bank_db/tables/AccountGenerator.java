@@ -21,7 +21,7 @@ public class AccountGenerator extends UniqueDataGenerator {
         Random random = new Random();
         LinkedList<BigInteger> accountNumbers = generateAccountNumbers();
         int customerId;
-        String isActive;
+        boolean isActive;
         for (int i=0; i<recordCount;i++) {
             if (customerGenerator.getAvailableIndexes().isEmpty()){
                 break;
@@ -29,22 +29,22 @@ public class AccountGenerator extends UniqueDataGenerator {
             customerId = customerGenerator.getAvailableIndexes().poll();
             BigInteger accountBigInt = accountNumbers.poll();
             String accountNo = accountBigInt.toString();
-            String availableBalance = String.valueOf(Math.abs(random.nextLong()));
-            String bookingBalance = String.valueOf(Math.abs(random.nextLong()));
+            long availableBalance = Math.abs(random.nextLong());
+            long bookingBalance = Math.abs(random.nextLong());
             Timestamp dateOpened = generateDate();
-            isActive = random.nextInt(11) < 10 ? "true" : "false";
-            if (!isActive.equals("true")) {
+            isActive = random.nextInt(11) < 10;
+            if (!isActive) {
                 Timestamp dateClosed = generateDate();
                 String command = String.format("insert into accounts " +
                                 " (customer_id, account_number, available_balance, booking_balance, date_opened, date_closed, is_active) " +
-                                " values (%d, '%s', '%s', '%s', '%s', '%s', '%s');\n",
-                        customerId, accountNo, availableBalance, bookingBalance, dateOpened, dateClosed, isActive);
+                                " values (%d, '%s', %d, %d, '%s', '%s', %s);\n",
+                        customerId, accountNo, availableBalance, bookingBalance, dateOpened, dateClosed, false);
                 sb.append(command);
             } else {
                 String command = String.format("insert into accounts " +
                                 " (customer_id, account_number, available_balance, booking_balance, date_opened, is_active) " +
-                                " values (%d, '%s', '%s', '%s', '%s', '%s');\n",
-                        customerId, accountNo, availableBalance, bookingBalance, dateOpened, isActive);
+                                " values (%d, '%s', %d, %d, '%s', %s);\n",
+                        customerId, accountNo, availableBalance, bookingBalance, dateOpened, true);
                 sb.append(command);
             }
         }
