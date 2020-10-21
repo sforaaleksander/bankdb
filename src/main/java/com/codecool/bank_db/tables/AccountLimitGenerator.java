@@ -29,8 +29,8 @@ public class AccountLimitGenerator extends UniqueDataGenerator{
                 break;
             }
             customerId = customerGenerator.getAvailableIndexes().poll();
-            daily_withdraw_limit = (random.nextInt(10)+100) * multipliers[random.nextInt(4)];
-            daily_contactless_limit = (random.nextInt(10)+100) * multipliers[random.nextInt(4)];
+            daily_withdraw_limit = (random.nextInt(10)+10) * multipliers[random.nextInt(4)];
+            daily_contactless_limit = (random.nextInt(10)+10) * multipliers[random.nextInt(4)];
             daily_transactions_limit = (random.nextInt(10)+1) * smallMultipliers[random.nextInt(3)];
             daily_card_payments_limit = (random.nextInt(10)+1) * smallMultipliers[random.nextInt(3)];
 
