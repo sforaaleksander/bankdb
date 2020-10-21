@@ -103,7 +103,7 @@ CREATE TABLE customers (
     first_name character varying(26) NOT NULL,
     last_name character varying(26) NOT NULL,
     phone_number character varying(16) NOT NULL,
-    email character varying(26) unique NOT NULL,
+    email character varying(50) unique NOT NULL,
     password text NOT NULL,
     pesel character varying(11) unique NOT NULL,
     marketing_cons_id integer NOT NULL,
