@@ -171,8 +171,8 @@ public class NameGenerator {
     private void dropFunction(String name) {
         try (PreparedStatement stmt = connection.prepareStatement(
                 "drop function if exists " + "get_random_" + name + "_name" + "(number int);" +
-                        "drop materialized view " + name + "_frequency_sum_view;" +
-                        "drop materialized view " + name + "_frequency_view;")
+                        "drop materialized view if exists " + name + "_frequency_sum_view;" +
+                        "drop materialized view if exists " + name + "_frequency_view;")
         ) {
             stmt.executeUpdate();
         } catch (SQLException e) {
