@@ -54,6 +54,7 @@ public class AccountGenerator extends UniqueDataGenerator {
     private long getBookingBalanceByAvailable(Random random, long availableBalance) {
         boolean balancesAreEqual = random.nextInt(11) < 9;
         if (balancesAreEqual) return availableBalance;
+        if (availableBalance == 0) return 0;
         long difference = Math.abs(random.nextLong() % availableBalance);
         return availableBalance - difference;
     }
