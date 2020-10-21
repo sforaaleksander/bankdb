@@ -17,6 +17,7 @@ public class FileWriter {
         TransactionTypeGenerator transactionTypeGenerator = new TransactionTypeGenerator();
         AddressTypeGenerator addressTypeGenerator = new AddressTypeGenerator();
 
+        AccountLimitGenerator accountLimitGenerator = new AccountLimitGenerator(customersNo);
         BankBranchGenerator bankBranchGenerator = new BankBranchGenerator(bankBranchesNo);
         AtmGenerator atmGenerator = new AtmGenerator(atmsNo);
         CardGenerator cardGenerator = new CardGenerator(customersNo);
@@ -25,6 +26,7 @@ public class FileWriter {
         CustomerAddressGenerator customerAddressGenerator = new CustomerAddressGenerator(customersNo);
         AddressGenerator addressGenerator = new AddressGenerator(addressNo);
 
+        accountLimitGenerator.setCustomerGenerator(customerGenerator);
         bankBranchGenerator.setAddressGenerator(addressGenerator);
         atmGenerator.setAddressGenerator(addressGenerator);
         customerGenerator.setBankBranchGenerator(bankBranchGenerator);
@@ -39,7 +41,8 @@ public class FileWriter {
 
         DataGenerator[] generators = {marketingConsentGenerator, provinceGenerator, transactionTypeGenerator,
                                         addressTypeGenerator, addressGenerator, bankBranchGenerator, atmGenerator,
-                                        customerGenerator, accountGenerator, cardGenerator, customerAddressGenerator};
+                                        customerGenerator, accountLimitGenerator,
+                                        accountGenerator, cardGenerator, customerAddressGenerator};
 
         PrintWriter writer = new PrintWriter("db_populate.sql", StandardCharsets.UTF_8);
 

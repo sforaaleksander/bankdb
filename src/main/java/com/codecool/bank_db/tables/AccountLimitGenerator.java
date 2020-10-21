@@ -38,6 +38,7 @@ public class AccountLimitGenerator extends UniqueDataGenerator{
                                     daily_transactions_limit, daily_card_payments_limit);
             sb.append(command);
         }
+        customerGenerator.createAvailableIndexes();
         return sb.toString();
     }
 }
