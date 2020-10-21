@@ -29,8 +29,8 @@ public class AccountGenerator extends UniqueDataGenerator {
             customerId = customerGenerator.getAvailableIndexes().poll();
             BigInteger accountBigInt = accountNumbers.poll();
             String accountNo = accountBigInt.toString();
-            String availableBalance = String.valueOf(random.nextLong());
-            String bookingBalance = String.valueOf(random.nextLong());
+            String availableBalance = String.valueOf(Math.abs(random.nextLong()));
+            String bookingBalance = String.valueOf(Math.abs(random.nextLong()));
             Timestamp dateOpened = generateDate();
             isActive = random.nextInt(11) < 10 ? "true" : "false";
             if (!isActive.equals("true")) {
