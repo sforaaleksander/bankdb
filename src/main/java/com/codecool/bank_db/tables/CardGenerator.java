@@ -102,11 +102,11 @@ public class CardGenerator extends UniqueDataGenerator {
     }
 
     private int getAmount(int transactionType) {
-        if (transactionType != 3) {
-            return getRandomNumberInRange(1, 100000);
+        if (transactionType == 3) { // transfer = 1 / card_payment = 2 / atm_transaction = 3
+            return getRandomNumberInRange(-1000000, 1000000);
         }
-        int randomAmount = getRandomNumberInRange(-10000, 10000);
-        return randomAmount - randomAmount % 10;
+        int randomAmount = getRandomNumberInRange(-1000000, -100);
+        return randomAmount - randomAmount % 1000;
     }
 
     private String getTransactionDate(String startDate, String expireDate) {
