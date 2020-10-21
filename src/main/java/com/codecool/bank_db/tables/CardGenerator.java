@@ -15,7 +15,6 @@ public class CardGenerator extends UniqueDataGenerator {
     public CardGenerator(Integer recordCount) {
         super(recordCount);
         r = new Random();
-        setOfCardNumbers = createSetOfCardNumbers();
     }
 
     public void setAccountGenerator(AccountGenerator accountGenerator) {
@@ -41,7 +40,7 @@ public class CardGenerator extends UniqueDataGenerator {
             String ccv_code = getCCV();
             boolean is_active = getIsActive();
             String defaultString = String.format("insert into cards(account_id, pin_code, start_date, expire_date, card_number, ccv_code, is_active)" +
-                    " values (%d, %s, %s, %s, %s, %s, %b)\n", account_id, pin_code, start_date, expire_date, card_number, ccv_code, is_active);
+                    " values (%d, %s, %s, %s, %s, %s, %b);\n", account_id, pin_code, start_date, expire_date, card_number, ccv_code, is_active);
             mainString.append(defaultString);
             mainString.append(createTransactions(account_id, pseudoCardSerial, start_date, expire_date));
         }
@@ -56,7 +55,7 @@ public class CardGenerator extends UniqueDataGenerator {
         int amount = getAmount(transactionType);
 
         String transactionString = String.format("insert into transactions(id, account_id, date, amount, transaction_type_id)" +
-                " values (%d, %d, %s, %d, %d)\n", transactionID, accountID, transactionDate, amount, transactionType);
+                " values (%d, %d, %s, %d, %d);\n", transactionID, accountID, transactionDate, amount, transactionType);
         finalString.append(transactionString);
         if (transactionType == 1) {
             finalString.append(createTransfer(transactionID, accountID, transactionDate));
@@ -71,13 +70,13 @@ public class CardGenerator extends UniqueDataGenerator {
     private String createAtmTransaction(int transactionID, int cardID) {
         int atmID = getRandomNumberInRange(1, atmGenerator.getRecordCount());
         return String.format("insert into atm_transactions(transaction_id, card_id, atm_id)" +
-                " values (%d, %d, %d)\n", transactionID, cardID, atmID);
+                " values (%d, %d, %d);\n", transactionID, cardID, atmID);
     }
 
     private String createCardPayment(int transactionID, int cardID) {
         String recipientName = generateRandomRecipient(); //max 50 znakow
         return String.format("insert into card_payments(transaction_id, card_id, recipient_name)" +
-                " values (%d, %d, %s)\n", transactionID, cardID, recipientName);
+                " values (%d, %d, %s);\n", transactionID, cardID, recipientName);
     }
 
     private String generateRandomRecipient() {
@@ -92,7 +91,7 @@ public class CardGenerator extends UniqueDataGenerator {
         }
         String title = generateRandomTitle(transactionDate, recipientAccountID, doNotUseThisAccountID, transactionID);// max 100 znakow
         return String.format("insert into transfers(transaction_id, recipient_account_id, title)" +
-                " values (%d, %d, %s)\n", transactionID, recipientAccountID, title);
+                " values (%d, %d, %s);\n", transactionID, recipientAccountID, title);
     }
 
     private String generateRandomTitle(String transactionDate, int recipientAccountID, int doNotUseThisAccountID, int transactionID) {
@@ -125,12 +124,12 @@ public class CardGenerator extends UniqueDataGenerator {
         return 3;
     }
 
-    private LinkedList<Long> createSetOfCardNumbers() {
+    public void setSetOfCardNumbers() {
         Set<Long> cardNumbers = new HashSet<>();
         while (cardNumbers.size() <= accountGenerator.getRecordCount()) {
             cardNumbers.add(getLongNumber());
         }
-        return new LinkedList<>(cardNumbers);
+        this.setOfCardNumbers = new LinkedList<>(cardNumbers);
     }
 
     private String getCardNumber() {

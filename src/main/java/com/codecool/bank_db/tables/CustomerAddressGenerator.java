@@ -29,7 +29,7 @@ public class CustomerAddressGenerator extends DataGenerator {
             int customer_id = getCustomerID();
             int address_id = getAddressID();
             int address_type_id = 2; // create zameldowania address
-            String defaultString = String.format("insert into customers_addresses(customer_id, address_id, address_type_id)" +
+            String defaultString = String.format("insert into customers_addresses(customer_id, address_id, address_type_id);" +
                     " values (%d, %d, %d)\n", customer_id, address_id, address_type_id);
             mainString.append(defaultString);
             if (addressGenerator.getAvailableIndexes().isEmpty()) {

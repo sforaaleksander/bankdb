@@ -25,6 +25,18 @@ public class FileWriter {
         CustomerAddressGenerator customerAddressGenerator = new CustomerAddressGenerator(customersNo);
         AddressGenerator addressGenerator = new AddressGenerator(addressNo);
 
+        bankBranchGenerator.setAddressGenerator(addressGenerator);
+        atmGenerator.setAddressGenerator(addressGenerator);
+        customerGenerator.setBankBranchGenerator(bankBranchGenerator);
+        customerGenerator.setMarketingConsentGenerator(marketingConsentGenerator);
+        accountGenerator.setCustomerGenerator(customerGenerator);
+        cardGenerator.setAccountGenerator(accountGenerator);
+        cardGenerator.setAtmGenerator(atmGenerator);
+        customerAddressGenerator.setAddressGenerator(addressGenerator);
+        customerAddressGenerator.setCustomerGenerator(customerGenerator);
+
+        cardGenerator.setSetOfCardNumbers();
+
         DataGenerator[] generators = {marketingConsentGenerator, provinceGenerator, transactionTypeGenerator,
                                         addressTypeGenerator, addressGenerator, bankBranchGenerator, atmGenerator,
                                         customerGenerator, accountGenerator, cardGenerator, customerAddressGenerator};
