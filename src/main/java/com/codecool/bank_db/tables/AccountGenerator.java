@@ -3,6 +3,7 @@ package com.codecool.bank_db.tables;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class AccountGenerator extends UniqueDataGenerator {
     private CustomerGenerator customerGenerator;
@@ -19,7 +20,7 @@ public class AccountGenerator extends UniqueDataGenerator {
     public String generate() {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
-        LinkedList<BigInteger> accountNumbers = generateAccountNumbers();
+        LinkedList<String> accountNumbers = generateAccountNumbers();
         int customerId;
         boolean isActive;
         for (int i=0; i<recordCount;i++) {
@@ -27,8 +28,7 @@ public class AccountGenerator extends UniqueDataGenerator {
                 break;
             }
             customerId = customerGenerator.getAvailableIndexes().poll();
-            BigInteger accountBigInt = accountNumbers.poll();
-            String accountNo = accountBigInt.toString();
+            String accountNo = accountNumbers.poll();
             long availableBalance = Math.abs(random.nextLong());
             long bookingBalance = Math.abs(random.nextLong());
             Timestamp dateOpened = generateDate();
@@ -52,27 +52,19 @@ public class AccountGenerator extends UniqueDataGenerator {
         return sb.toString();
     }
 
-    private LinkedList<BigInteger> generateAccountNumbers() {
-        Set<BigInteger> numbers = new HashSet<>();
+    private LinkedList<String> generateAccountNumbers() {
+        Set<String> numbers = new HashSet<>();
         while (numbers.size() != recordCount) {
-            numbers.add(generateNumber());
+            numbers.add(generateAccountNumberAsString());
         }
         return new LinkedList<>(numbers);
     }
 
-    //TODO
-    private BigInteger generateNumber() {
-        BigInteger minLimit = new BigInteger("100000000000000000000000");
-        BigInteger maxLimit = new BigInteger("999999999999999999999999");
-        BigInteger bigInteger = maxLimit.subtract(minLimit);
-        Random randNum = new Random();
-        int len = maxLimit.bitLength();
-        BigInteger res = new BigInteger(len, randNum);
-        if (res.compareTo(minLimit) < 0)
-            res = res.add(minLimit);
-        if (res.compareTo(bigInteger) >= 0)
-            res = res.mod(bigInteger).add(minLimit);
-        return res;
+    private String generateAccountNumberAsString() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        long first = random.nextLong(1000000000000L, 10000000000000L);
+        long second = random.nextLong(1000000000000L, 10000000000000L);
+        return String.format("%13d", first) + String.format("%13d", second);
     }
 
     private Timestamp generateDate() {
