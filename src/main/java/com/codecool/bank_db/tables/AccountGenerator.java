@@ -5,9 +5,11 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class AccountGenerator extends UniqueDataGenerator {
+    CustomerGenerator customerGenerator;
 
-    public AccountGenerator(Integer recordCount) {
+    public AccountGenerator(Integer recordCount, CustomerGenerator customerGenerator) {
         super(recordCount);
+        this.customerGenerator = customerGenerator;
     }
 
     @Override
@@ -18,10 +20,10 @@ public class AccountGenerator extends UniqueDataGenerator {
         int customerId;
         String isActive;
         for (int i=0; i<recordCount;i++) {
-            if (CustomerGenerator.availableIndexes.isEmpty()){
+            if (customerGenerator.getAvailableIndexes().isEmpty()){
                 break;
             }
-            customerId = CustomerGenerator.availableIndexes.poll();
+            customerId = customerGenerator.getAvailableIndexes().poll();
             BigInteger accountNo = accountNumbers.poll();
             BigInteger availableBalance = new BigInteger(100, random);
             BigInteger bookingBalance = new BigInteger(100, random);
@@ -42,7 +44,7 @@ public class AccountGenerator extends UniqueDataGenerator {
                 sb.append(command);
             }
         }
-        CustomerGenerator.createAvailableIndexes();
+        customerGenerator.createAvailableIndexes();
         return sb.toString();
     }
 
