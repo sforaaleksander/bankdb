@@ -3,3 +3,4 @@ target/
 *.iml
 *.ddl
 db_populate.sql
+run.txt
