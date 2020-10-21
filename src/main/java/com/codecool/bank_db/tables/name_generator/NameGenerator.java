@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class NameGenerator {
+    private static final int FIRST_NAME_LIMIT = 5000;
+    private static final int LAST_NAME_LIMIT = 50000;
     private final Connection connection;
-
+    String[] NAMES;
     String[] FUNCTION_NAMES;
     String[] TABLE_NAMES;
 
@@ -19,7 +21,7 @@ public class NameGenerator {
     }
 
     private void setNames() {
-        String[] NAMES = {
+        NAMES = new String[]{
                 "male_first",
                 "female_first",
                 "male_last",
@@ -39,23 +41,25 @@ public class NameGenerator {
         createFunctions();
     }
 
-    public String getRandomMaleFirstName(int topRowsLimit) {
-        return getRandomName(FUNCTION_NAMES[0], topRowsLimit);
+    public String getRandomMaleFirstName() {
+        return getRandomName(FUNCTION_NAMES[0]);
     }
 
-    public String getRandomFemaleFirstName(int topRowsLimit) {
-        return getRandomName(FUNCTION_NAMES[1], topRowsLimit);
+    public String getRandomFemaleFirstName() {
+        return getRandomName(FUNCTION_NAMES[1]);
     }
 
-    public String getRandomMaleLastName(int topRowsLimit) {
-        return getRandomName(FUNCTION_NAMES[2], topRowsLimit);
+    public String getRandomMaleLastName() {
+        return getRandomName(FUNCTION_NAMES[2]);
     }
 
-    public String getRandomFemaleLastName(int topRowsLimit) {
-        return getRandomName(FUNCTION_NAMES[3], topRowsLimit);
+    public String getRandomFemaleLastName() {
+        return getRandomName(FUNCTION_NAMES[3]);
     }
 
-    public String getRandomName(String functionName, int count) {
+    public String getRandomName(String functionName) {
+        int count = functionName.equals("get_random_male_first_name") || functionName.equals("get_random_female_first_name")
+                ? FIRST_NAME_LIMIT : LAST_NAME_LIMIT;
         try (PreparedStatement stmt = connection.
                 prepareStatement("SELECT " + functionName + "(" + count + ");");
              ResultSet results = stmt.executeQuery()
@@ -109,42 +113,47 @@ public class NameGenerator {
     }
 
     private void createFunctions() {
-        for (int i = 0; i < FUNCTION_NAMES.length; i++) {
-            createFunction(FUNCTION_NAMES[i], TABLE_NAMES[i]);
-        }
+        createFunction(true, true);
+        createFunction(false, true);
+        createFunction(true, false);
+        createFunction(false, false);
     }
 
-    private void createFunction(String functionName, String tableName) {
+    private void createFunction(boolean male, boolean firstName) {
+        String name = male ? "male" : "female";
+        name += firstName ? "_first" : "_last";
         try (PreparedStatement stmt = connection.prepareStatement(
-                "create or replace function " + functionName + "(number int) returns text as"
-                        + " $$"
-                        + " declare"
-                        + "     count_sum bigint;"
-                        + "     random_n  bigint;"
-                        + "     x         record;"
-                        + "     i         int := 0;"
-                        + " begin"
-                        + "     number := least(number, (SELECT count(*) FROM public." + tableName + ")::int);"
-                        + "     count_sum := (select sum(c.count / last_count.count) as frequency"
-                        + "                   from (select count from " + tableName + " limit number) c,"
-                        + "                        (select * from " + tableName + " where id = number) last_count);"
-                        + "     random_n := floor(random() * count_sum + 1);"
-
-                        + "     for x in"
-                        + "         select c.count / last_count.count as frequency"
-                        + "         from (select count from " + tableName + " limit number) c,"
-                        + "              (select * from " + tableName + " where id = number) last_count"
-                        + "         loop"
-                        + "             raise notice 'frequency: %', x.frequency;"
-                        + "             i := i + 1;"
-                        + "             random_n := random_n - x.frequency;"
-                        + "             if random_n <= 0 then"
-                        + "                 exit;"
-                        + "             end if;"
-                        + "         end loop;"
-                        + "     return initcap((select name from " + tableName + " where id = i));"
-                        + " end ;"
-                        + " $$ language plpgsql;"
+                " create materialized view " + name + "_frequency_sum_view as\n" +
+                        " select sum(c.count / last_count.count) as frequency\n" +
+                        " from (select count from " + name + "_names limit " + (firstName ? FIRST_NAME_LIMIT : LAST_NAME_LIMIT) + ") c,\n" +
+                        "      (select * from " + name + "_names where id = " + (firstName ? FIRST_NAME_LIMIT : LAST_NAME_LIMIT) + ") last_count;\n" +
+                        " create materialized view " + name + "_frequency_view as\n" +
+                        " select c.count / last_count.count as frequency\n" +
+                        " from (select count from " + name + "_names limit " + (firstName ? FIRST_NAME_LIMIT : LAST_NAME_LIMIT) + ") c,\n" +
+                        "      (select * from " + name + "_names where id = " + (firstName ? FIRST_NAME_LIMIT : LAST_NAME_LIMIT) + ") last_count;\n" +
+                        "create or replace function get_random_" + name + "_name(number int) returns text as\n" +
+                        "$$\n" +
+                        "declare\n" +
+                        "    count_sum bigint;\n" +
+                        "    random_n  bigint;\n" +
+                        "    x         record;\n" +
+                        "    i         int := 0;\n" +
+                        "begin\n" +
+                        "    count_sum := (select frequency from " + name + "_frequency_sum_view);\n" +
+                        "    random_n := floor(random() * count_sum + 1);\n" +
+                        "\n" +
+                        "    for x in\n" +
+                        "        select frequency from " + name + "_frequency_view\n" +
+                        "        loop\n" +
+                        "            i := i + 1;\n" +
+                        "            random_n := random_n - x.frequency;\n" +
+                        "            if random_n <= 0 then\n" +
+                        "                exit;\n" +
+                        "            end if;\n" +
+                        "        end loop;\n" +
+                        "    return initcap((select name from " + name + "_names where id = i));\n" +
+                        "end ;\n" +
+                        "$$ language plpgsql;"
         )
         ) {
             stmt.executeUpdate();
@@ -154,14 +163,16 @@ public class NameGenerator {
     }
 
     public void dropFunctions() {
-        for (String functionName : FUNCTION_NAMES) {
-            dropFunction(functionName);
+        for (String name : NAMES) {
+            dropFunction(name);
         }
     }
 
-    private void dropFunction(String functionName) {
+    private void dropFunction(String name) {
         try (PreparedStatement stmt = connection.prepareStatement(
-                "drop function if exists " + functionName + "(number int);")
+                "drop function if exists " + "get_random_" + name + "_name" + "(number int);" +
+                        "drop materialized view " + name + "_frequency_sum_view;" +
+                        "drop materialized view " + name + "_frequency_view;")
         ) {
             stmt.executeUpdate();
         } catch (SQLException e) {
