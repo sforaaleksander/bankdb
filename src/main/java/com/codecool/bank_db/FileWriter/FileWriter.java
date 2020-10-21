@@ -49,6 +49,7 @@ public class FileWriter {
         for (DataGenerator generator : generators) {
             writer.print(generator.generate());
         }
+        writer.println("");
         writer.close();
     }
 }
