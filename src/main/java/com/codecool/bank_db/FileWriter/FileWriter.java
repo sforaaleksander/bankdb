@@ -41,7 +41,7 @@ public class FileWriter {
                                         addressTypeGenerator, addressGenerator, bankBranchGenerator, atmGenerator,
                                         customerGenerator, accountGenerator, cardGenerator, customerAddressGenerator};
 
-        PrintWriter writer = new PrintWriter("sql_script.sql", StandardCharsets.UTF_8);
+        PrintWriter writer = new PrintWriter("db_populate.sql", StandardCharsets.UTF_8);
 
         for (DataGenerator generator : generators) {
             writer.print(generator.generate());
