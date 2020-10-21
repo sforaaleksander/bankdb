@@ -64,7 +64,7 @@ public class AccountGenerator extends UniqueDataGenerator {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         long first = random.nextLong(1000000000000L, 10000000000000L);
         long second = random.nextLong(1000000000000L, 10000000000000L);
-        return String.format("%13d", first) + String.format("%13d", second);
+        return "" + first + second;
     }
 
     private Timestamp generateDate() {
