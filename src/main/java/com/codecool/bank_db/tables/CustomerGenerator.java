@@ -30,7 +30,7 @@ public class CustomerGenerator extends UniqueDataGenerator {
     @Override
     public String generate() {
 //        nameGenerator.dropTables();
-//        nameGenerator.dropFunctions();
+        nameGenerator.dropFunctions();
         nameGenerator.createAndPopulateTablesAndFunctions();
 
         StringBuilder sb = new StringBuilder();
@@ -47,11 +47,11 @@ public class CustomerGenerator extends UniqueDataGenerator {
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
         first_name = male
-                ? nameGenerator.getRandomMaleFirstName(1000)
-                : nameGenerator.getRandomFemaleFirstName(1000);
+                ? nameGenerator.getRandomMaleFirstName()
+                : nameGenerator.getRandomFemaleFirstName();
         last_name = male
-                ? nameGenerator.getRandomMaleLastName(10000)
-                : nameGenerator.getRandomFemaleLastName(10000);
+                ? nameGenerator.getRandomMaleLastName()
+                : nameGenerator.getRandomFemaleLastName();
         password = generateRandomString(20);
         marketing_cons_id = random.nextInt(1, marketingConsentGenerator.getRecordCount());
         bank_branch_id = random.nextInt(1, bankBranchGenerator.getRecordCount());
