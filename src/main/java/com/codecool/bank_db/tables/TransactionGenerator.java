@@ -37,7 +37,7 @@ public class TransactionGenerator extends DataGenerator {
             transactionType = random.nextInt(5);
             String command = String.format("insert into transactions" +
                             " (account_id, date, amount, transaction_type_id)" +
-                            " values (%d, %s, %s, %s);\n",
+                            " values (%d, '%s', %s, %s);\n",
                     accountId, date, amount, transactionType);
             sb.append(command);
         }
