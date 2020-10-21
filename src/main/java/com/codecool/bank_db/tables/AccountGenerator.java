@@ -27,22 +27,23 @@ public class AccountGenerator extends UniqueDataGenerator {
                 break;
             }
             customerId = customerGenerator.getAvailableIndexes().poll();
-            BigInteger accountNo = accountNumbers.poll();
-            BigInteger availableBalance = new BigInteger(100, random);
-            BigInteger bookingBalance = new BigInteger(100, random);
+            BigInteger accountBigInt = accountNumbers.poll();
+            String accountNo = accountBigInt.toString();
+            String availableBalance = String.valueOf(random.nextLong());
+            String bookingBalance = String.valueOf(random.nextLong());
             Timestamp dateOpened = generateDate();
             isActive = random.nextInt(11) < 10 ? "true" : "false";
             if (!isActive.equals("true")) {
                 Timestamp dateClosed = generateDate();
                 String command = String.format("insert into accounts " +
                                 " (customer_id, account_number, available_balance, booking_balance, date_opened, date_closed, is_active) " +
-                                " values (%d, %d, %d, %d, '%s', '%s', '%s');\n",
+                                " values (%d, '%s', '%s', '%s', '%s', '%s', '%s');\n",
                         customerId, accountNo, availableBalance, bookingBalance, dateOpened, dateClosed, isActive);
                 sb.append(command);
             } else {
                 String command = String.format("insert into accounts " +
                                 " (customer_id, account_number, available_balance, booking_balance, date_opened, is_active) " +
-                                " values (%d, %d, %d, %d, '%s', '%s');\n",
+                                " values (%d, '%s', '%s', '%s', '%s', '%s');\n",
                         customerId, accountNo, availableBalance, bookingBalance, dateOpened, isActive);
                 sb.append(command);
             }
@@ -59,9 +60,10 @@ public class AccountGenerator extends UniqueDataGenerator {
         return new LinkedList<>(numbers);
     }
 
+    //TODO
     private BigInteger generateNumber() {
-        BigInteger minLimit = new BigInteger("10000000000000000000000000");
-        BigInteger maxLimit = new BigInteger("99999999999999999999999999");
+        BigInteger minLimit = new BigInteger("100000000000000000000000");
+        BigInteger maxLimit = new BigInteger("999999999999999999999999");
         BigInteger bigInteger = maxLimit.subtract(minLimit);
         Random randNum = new Random();
         int len = maxLimit.bitLength();
