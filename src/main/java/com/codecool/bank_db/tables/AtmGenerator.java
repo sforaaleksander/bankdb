@@ -3,9 +3,14 @@ package com.codecool.bank_db.tables;
 import java.util.Random;
 
 public class AtmGenerator extends DataGenerator {
+    private AddressGenerator addressGenerator;
 
     public AtmGenerator(Integer count) {
         super(count);
+    }
+
+    public void setAddressGenerator(AddressGenerator addressGenerator) {
+        this.addressGenerator = addressGenerator;
     }
 
     @Override
@@ -16,10 +21,10 @@ public class AtmGenerator extends DataGenerator {
         String isBankProperty;
         String isActive;
         for (int i=0; i<recordCount;i++) {
-            if (AddressGenerator.availableIndexes.isEmpty()){
+            if (addressGenerator.getAvailableIndexes().isEmpty()){
                 break;
             }
-            addressId = AddressGenerator.availableIndexes.poll();
+            addressId = addressGenerator.getAvailableIndexes().poll();
             isBankProperty = random.nextInt(10) < 9 ? "true" : "false";
             isActive = random.nextInt(10) < 9 ? "true" : "false";
             String command = String.format("insert into atms " +

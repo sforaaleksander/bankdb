@@ -7,10 +7,20 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CustomerGenerator extends UniqueDataGenerator {
     private ThreadLocalRandom random;
+    private MarketingConsentGenerator marketingConsentGenerator;
+    private BankBranchGenerator bankBranchGenerator;
 
     public CustomerGenerator(Integer recordCount) {
         super(recordCount);
         random = ThreadLocalRandom.current();
+    }
+
+    public void setMarketingConsentGenerator(MarketingConsentGenerator marketingConsentGenerator) {
+        this.marketingConsentGenerator = marketingConsentGenerator;
+    }
+
+    public void setBankBranchGenerator(BankBranchGenerator bankBranchGenerator) {
+        this.bankBranchGenerator = bankBranchGenerator;
     }
 
     @Override
@@ -35,8 +45,8 @@ public class CustomerGenerator extends UniqueDataGenerator {
                 ? Customers.MALE_SURNAMES[random.nextInt(0, Customers.MALE_SURNAMES.length)]
                 : Customers.FEMALE_SURNAMES[random.nextInt(0, Customers.FEMALE_SURNAMES.length)];
         password = generateRandomString(20);
-        marketing_cons_id = random.nextInt(1, MarketingConsentGenerator.recordCount);
-        bank_branch_id = random.nextInt(1, BankBranchGenerator.recordCount);
+        marketing_cons_id = random.nextInt(1, marketingConsentGenerator.getRecordCount());
+        bank_branch_id = random.nextInt(1, bankBranchGenerator.getRecordCount());
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);

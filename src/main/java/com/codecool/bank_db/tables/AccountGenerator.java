@@ -5,10 +5,13 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class AccountGenerator extends UniqueDataGenerator {
-    CustomerGenerator customerGenerator;
+    private CustomerGenerator customerGenerator;
 
-    public AccountGenerator(Integer recordCount, CustomerGenerator customerGenerator) {
+    public AccountGenerator(Integer recordCount) {
         super(recordCount);
+    }
+
+    public void setCustomerGenerator(CustomerGenerator customerGenerator) {
         this.customerGenerator = customerGenerator;
     }
 

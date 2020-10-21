@@ -3,9 +3,14 @@ package com.codecool.bank_db.tables;
 import java.util.Random;
 
 public class AccountLimitGenerator extends UniqueDataGenerator{
+    private CustomerGenerator customerGenerator;
 
     public AccountLimitGenerator(Integer recordCount) {
         super(recordCount);
+    }
+
+    public void setCustomerGenerator(CustomerGenerator customerGenerator) {
+        this.customerGenerator = customerGenerator;
     }
 
     @Override
@@ -19,10 +24,10 @@ public class AccountLimitGenerator extends UniqueDataGenerator{
         int daily_card_payments_limit;
         int[] multipliers = new int[]{10, 100, 1000, 10_000};
         for (int i=0; i<recordCount;i++){
-            if (CustomerGenerator.availableIndexes.isEmpty()){
+            if (customerGenerator.getAvailableIndexes().isEmpty()){
                 break;
             }
-            customerId = CustomerGenerator.availableIndexes.poll();
+            customerId = customerGenerator.getAvailableIndexes().poll();
             daily_withdraw_limit = random.nextInt(10) * multipliers[random.nextInt(4)];
             daily_contactless_limit = random.nextInt(10) * multipliers[random.nextInt(4)];
             daily_transactions_limit = random.nextInt(10) * multipliers[random.nextInt(4)];

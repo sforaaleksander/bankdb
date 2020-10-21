@@ -7,8 +7,10 @@ import java.util.Random;
 import java.util.Set;
 
 public class CardGenerator extends UniqueDataGenerator {
-    Random r;
-    LinkedList<Long> setOfCardNumbers;
+    private Random r;
+    private LinkedList<Long> setOfCardNumbers;
+    private AccountGenerator accountGenerator;
+    private AtmGenerator atmGenerator;
 
     public CardGenerator(Integer recordCount) {
         super(recordCount);
@@ -16,11 +18,19 @@ public class CardGenerator extends UniqueDataGenerator {
         setOfCardNumbers = createSetOfCardNumbers();
     }
 
+    public void setAccountGenerator(AccountGenerator accountGenerator) {
+        this.accountGenerator = accountGenerator;
+    }
+
+    public void setAtmGenerator(AtmGenerator atmGenerator) {
+        this.atmGenerator = atmGenerator;
+    }
+
     @Override
     public String generate() {
         StringBuilder mainString = new StringBuilder();
-        for (int pseudoCardSerial = 1; pseudoCardSerial <= AccountGenerator.recordCount; pseudoCardSerial++) {
-            if (AccountGenerator.availableIndexes.isEmpty()) {
+        for (int pseudoCardSerial = 1; pseudoCardSerial <= accountGenerator.getRecordCount(); pseudoCardSerial++) {
+            if (accountGenerator.getAvailableIndexes().isEmpty()) {
                 break;
             }
             int account_id = getAccountId();
@@ -59,7 +69,7 @@ public class CardGenerator extends UniqueDataGenerator {
     }
 
     private String createAtmTransaction(int transactionID, int cardID) {
-        int atmID = getRandomNumberInRange(1, AtmGenerator.recordCount);
+        int atmID = getRandomNumberInRange(1, atmGenerator.getRecordCount());
         return String.format("insert into atm_transactions(transaction_id, card_id, atm_id)" +
                 " values (%d, %d, %d)\n", transactionID, cardID, atmID);
     }
@@ -76,9 +86,9 @@ public class CardGenerator extends UniqueDataGenerator {
     }
 
     private String createTransfer(int transactionID, int doNotUseThisAccountID, String transactionDate) {
-        int recipientAccountID = getRandomNumberInRange(1, AccountGenerator.recordCount);
+        int recipientAccountID = getRandomNumberInRange(1, accountGenerator.getRecordCount());
         while (recipientAccountID != doNotUseThisAccountID) {
-            recipientAccountID = getRandomNumberInRange(1, AccountGenerator.recordCount);
+            recipientAccountID = getRandomNumberInRange(1, accountGenerator.getRecordCount());
         }
         String title = generateRandomTitle(transactionDate, recipientAccountID, doNotUseThisAccountID, transactionID);// max 100 znakow
         return String.format("insert into transfers(transaction_id, recipient_account_id, title)" +
@@ -117,7 +127,7 @@ public class CardGenerator extends UniqueDataGenerator {
 
     private LinkedList<Long> createSetOfCardNumbers() {
         Set<Long> cardNumbers = new HashSet<>();
-        while (cardNumbers.size() <= AccountGenerator.recordCount) {
+        while (cardNumbers.size() <= accountGenerator.getRecordCount()) {
             cardNumbers.add(getLongNumber());
         }
         return new LinkedList<>(cardNumbers);
@@ -146,7 +156,7 @@ public class CardGenerator extends UniqueDataGenerator {
     }
 
     private int getAccountId() {
-        return AccountGenerator.availableIndexes.poll();
+        return accountGenerator.getAvailableIndexes().poll();
     }
 
     private boolean getIsActive() {

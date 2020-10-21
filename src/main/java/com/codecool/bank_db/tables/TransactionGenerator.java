@@ -3,9 +3,20 @@ package com.codecool.bank_db.tables;
 import java.util.Random;
 
 public class TransactionGenerator extends DataGenerator {
+    private CustomerGenerator customerGenerator;
+    private AccountGenerator accountGenerator;
 
     public TransactionGenerator(Integer count) {
         super(count);
+    }
+
+
+    public void setCustomerGenerator(CustomerGenerator customerGenerator) {
+        this.customerGenerator = customerGenerator;
+    }
+
+    public void setAccountGenerator(AccountGenerator accountGenerator) {
+        this.accountGenerator = accountGenerator;
     }
 
     @Override
@@ -17,10 +28,10 @@ public class TransactionGenerator extends DataGenerator {
         int amount;
         int transactionType;
         for (int i=0; i<recordCount;i++) {
-            if (CustomerGenerator.availableIndexes.isEmpty()){
+            if (customerGenerator.getAvailableIndexes().isEmpty()){
                 break;
             }
-            accountId = AccountGenerator.availableIndexes.poll();
+            accountId = accountGenerator.getAvailableIndexes().poll();
             date = "";
             amount = random.nextInt(10_000_000);
             transactionType = random.nextInt(5);

@@ -3,17 +3,27 @@ package com.codecool.bank_db.tables;
 import java.util.Random;
 
 public class CustomerAddressGenerator extends DataGenerator {
-    Random r = new Random();
+    private Random r = new Random();
+    private CustomerGenerator customerGenerator;
+    private AddressGenerator addressGenerator;
 
     public CustomerAddressGenerator(Integer count) {
         super(count);
     }
 
+    public void setCustomerGenerator(CustomerGenerator customerGenerator) {
+        this.customerGenerator = customerGenerator;
+    }
+
+    public void setAddressGenerator(AddressGenerator addressGenerator) {
+        this.addressGenerator = addressGenerator;
+    }
+
     @Override
     public String generate() {
         StringBuilder mainString = new StringBuilder();
-        for (int i = 1; i <= CustomerGenerator.recordCount; i++) {
-            if (CustomerGenerator.availableIndexes.isEmpty() || AddressGenerator.availableIndexes.isEmpty()) {
+        for (int i = 1; i <= customerGenerator.getRecordCount(); i++) {
+            if (customerGenerator.getAvailableIndexes().isEmpty() || addressGenerator.getAvailableIndexes().isEmpty()) {
                 break;
             }
             int customer_id = getCustomerID();
@@ -22,7 +32,7 @@ public class CustomerAddressGenerator extends DataGenerator {
             String defaultString = String.format("insert into customers_addresses(customer_id, address_id, address_type_id)" +
                     " values (%d, %d, %d)\n", customer_id, address_id, address_type_id);
             mainString.append(defaultString);
-            if (AddressGenerator.availableIndexes.isEmpty()) {
+            if (addressGenerator.getAvailableIndexes().isEmpty()) {
                 break;
             }
             if (r.nextInt(100) < 25) { // create additional korespondencyjny address
@@ -37,10 +47,10 @@ public class CustomerAddressGenerator extends DataGenerator {
     }
 
     private int getCustomerID() {
-        return CustomerGenerator.availableIndexes.poll();
+        return customerGenerator.getAvailableIndexes().poll();
     }
 
     private int getAddressID() {
-        return AddressGenerator.availableIndexes.poll();
+        return addressGenerator.getAvailableIndexes().poll();
     }
 }
