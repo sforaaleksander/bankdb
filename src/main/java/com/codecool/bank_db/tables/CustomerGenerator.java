@@ -58,7 +58,8 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
-            email = first_name + "_" + last_name + random.nextInt(0, 100) + "@gmail.com";
+            email = (first_name + "_" + last_name).replaceAll("[^\\w]+", "")
+                    + random.nextInt(0, 100) + "@gmail.com";
             pesel = generatePesel(male);
         } while (customers.getPhoneNumbers().contains(phone_number) ||
                 customers.getEmails().contains(email) ||
