@@ -56,7 +56,7 @@ public class AccountGenerator extends UniqueDataGenerator {
         if (balancesAreEqual) return availableBalance;
         if (availableBalance == 0) return 0;
         long difference = Math.abs(random.nextLong() % availableBalance);
-        return availableBalance - difference;
+        return availableBalance + difference;
     }
 
     private long getAvailableBalance(Random random) {
