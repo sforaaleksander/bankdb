@@ -1,5 +1,8 @@
 package com.codecool.bank_db.generators;
 
+
+import java.io.PrintWriter;
+
 public abstract class DataGenerator {
     protected Integer recordCount;
 
@@ -7,7 +10,7 @@ public abstract class DataGenerator {
         recordCount = count;
     }
 
-    public abstract String generate();
+    public abstract void generate(PrintWriter writer);
 
     public Integer getRecordCount() {
         return recordCount;

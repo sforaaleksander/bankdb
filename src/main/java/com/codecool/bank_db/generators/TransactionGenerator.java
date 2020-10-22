@@ -1,5 +1,6 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
 import java.util.Random;
 
 public class TransactionGenerator extends DataGenerator {
@@ -20,8 +21,7 @@ public class TransactionGenerator extends DataGenerator {
     }
 
     @Override
-    public String generate() {
-        StringBuilder sb = new StringBuilder();
+    public void generate(PrintWriter writer) {
         Random random = new Random();
         int accountId;
         String date;
@@ -39,8 +39,7 @@ public class TransactionGenerator extends DataGenerator {
                             " (account_id, date, amount, transaction_type_id)" +
                             " values (%d, '%s', %s, %s);\n",
                     accountId, date, amount, transactionType);
-            sb.append(command);
+            writer.println(command);
         }
-        return sb.toString();
     }
 }

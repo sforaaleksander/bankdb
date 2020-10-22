@@ -8,10 +8,10 @@ import java.nio.charset.StandardCharsets;
 
 public class FileWriter {
     public void collectGeneratedInsertsToFile() throws IOException {
-        int customersNo = 10000;
-        int atmsNo = 500;
-        int bankBranchesNo = 500;
-        int addressNo = 11000;
+        int customersNo = 300_000;
+        int atmsNo = 5000;
+        int bankBranchesNo = 5000;
+        int addressNo = 310_000;
         MarketingConsentGenerator marketingConsentGenerator = new MarketingConsentGenerator();
         ProvinceGenerator provinceGenerator = new ProvinceGenerator();
         TransactionTypeGenerator transactionTypeGenerator = new TransactionTypeGenerator();
@@ -47,7 +47,8 @@ public class FileWriter {
         PrintWriter writer = new PrintWriter("db_populate.sql", StandardCharsets.UTF_8);
 
         for (DataGenerator generator : generators) {
-            writer.print(generator.generate());
+            generator.generate(writer);
+
         }
         writer.println("");
         writer.close();

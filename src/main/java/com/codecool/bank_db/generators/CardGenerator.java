@@ -1,5 +1,6 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -26,8 +27,7 @@ public class CardGenerator extends UniqueDataGenerator {
     }
 
     @Override
-    public String generate() {
-        StringBuilder mainString = new StringBuilder();
+    public void generate(PrintWriter writer) {
         int transactionId = 1;
         for (int pseudoCardSerial = 1; pseudoCardSerial <= accountGenerator.getRecordCount(); pseudoCardSerial++) {
             if (accountGenerator.getAvailableIndexes().isEmpty()) {
@@ -42,13 +42,12 @@ public class CardGenerator extends UniqueDataGenerator {
             boolean is_active = getIsActive();
             String defaultString = String.format("insert into cards(account_id, pin_code, start_date, expire_date, card_number, cvv_code, is_active)" +
                     " values (%d, '%s', '%s', '%s', '%s', '%s', %b);\n", account_id, pin_code, start_date, expire_date, card_number, cvv_code, is_active);
-            mainString.append(defaultString);
+            writer.print(defaultString);
             for (int i = 1; i < getRandomNumberInRange(5, 30); i++){
-                mainString.append(createTransactions(account_id, pseudoCardSerial, start_date, expire_date, transactionId));
+                writer.print(createTransactions(account_id, pseudoCardSerial, start_date, expire_date, transactionId));
                 transactionId++;
             }
         }
-        return mainString.toString();
     }
 
     private String createTransactions(int accountID, int pseudoCardSerial, String startDate, String expireDate, int transactionId) { //todo transfer = 1 / card_payment = 2 / atm_transaction = 3

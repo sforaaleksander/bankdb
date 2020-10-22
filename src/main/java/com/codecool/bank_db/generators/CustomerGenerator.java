@@ -1,8 +1,10 @@
 package com.codecool.bank_db.generators;
 
+import com.codecool.bank_db.RandomDict;
 import com.codecool.bank_db.components.Customers;
-import com.codecool.bank_db.file_handlers.RandomLineProvider;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -10,25 +12,25 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CustomerGenerator extends UniqueDataGenerator {
     private final ThreadLocalRandom random;
-    private final RandomLineProvider maleFirstNameRandomLineProvider;
-    private final RandomLineProvider femaleFirstNameRandomLineProvider;
-    private final RandomLineProvider maleLastNameRandomLineProvider;
-    private final RandomLineProvider femaleLastNameRandomLineProvider;
-    private final RandomLineProvider emailDomainsRandomLineProvider;
+    private final RandomDict maleFirstNameDict;
+    private final RandomDict femaleFirstNameDict;
+    private final RandomDict maleLastNameDict;
+    private final RandomDict femaleLastNameDict;
+    private final RandomDict emailDomainsDict;
     private final String[] polishLetters = new String[]{"ą", "ę", "ć", "ż", "ź", "ó", "ł", "ń", "ś"};
     private final String[] nonPolishLetters = new String[]{"a", "e", "c", "z", "z", "o", "l", "n", "s"};
     private final String[] EMAIL_SEPARATORS = {".", "_", "-", ""};
     private MarketingConsentGenerator marketingConsentGenerator;
     private BankBranchGenerator bankBranchGenerator;
 
-    public CustomerGenerator(Integer recordCount) {
+    public CustomerGenerator(Integer recordCount) throws IOException {
         super(recordCount);
         random = ThreadLocalRandom.current();
-        maleFirstNameRandomLineProvider = new RandomLineProvider("src/main/resources/male_first_names.txt");
-        femaleFirstNameRandomLineProvider = new RandomLineProvider("src/main/resources/female_first_names.txt");
-        maleLastNameRandomLineProvider = new RandomLineProvider("src/main/resources/male_last_names.txt");
-        femaleLastNameRandomLineProvider = new RandomLineProvider("src/main/resources/female_last_names.txt");
-        emailDomainsRandomLineProvider = new RandomLineProvider("src/main/resources/email_domains.txt");
+        maleFirstNameDict = new RandomDict().load("src/main/resources/male_first_names.txt");
+        femaleFirstNameDict = new RandomDict().load("src/main/resources/female_first_names.txt");
+        maleLastNameDict = new RandomDict().load("src/main/resources/male_last_names.txt");
+        femaleLastNameDict = new RandomDict().load("src/main/resources/female_last_names.txt");
+        emailDomainsDict = new RandomDict().load("src/main/resources/email_domains.txt");
     }
 
     public void setMarketingConsentGenerator(MarketingConsentGenerator marketingConsentGenerator) {
@@ -40,14 +42,13 @@ public class CustomerGenerator extends UniqueDataGenerator {
     }
 
     @Override
-    public String generate() {
-        StringBuilder sb = new StringBuilder();
+    public void generate(PrintWriter writer) {
         Customers customers = new Customers(recordCount);
 
         for (int i = 0; i < recordCount; i++) {
-            sb.append(generateOne(customers)).append("\n");
+            writer.println(generateOne(customers));
+            writer.println("\n");
         }
-        return sb.toString();
     }
 
     private String generateOne(Customers customers) {
@@ -55,11 +56,11 @@ public class CustomerGenerator extends UniqueDataGenerator {
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
         first_name = male // TODO use db to generate names
-                ? maleFirstNameRandomLineProvider.getRandomLine()
-                : femaleFirstNameRandomLineProvider.getRandomLine();
+                ? maleFirstNameDict.nextWord()
+                : femaleFirstNameDict.nextWord();
         last_name = male
-                ? maleLastNameRandomLineProvider.getRandomLine()
-                : femaleLastNameRandomLineProvider.getRandomLine();
+                ? maleLastNameDict.nextWord()
+                : femaleLastNameDict.nextWord();
         password = generateRandomString(20);
         marketing_cons_id = random.nextInt(1, marketingConsentGenerator.getRecordCount());
         bank_branch_id = random.nextInt(1, bankBranchGenerator.getRecordCount());
@@ -86,7 +87,7 @@ public class CustomerGenerator extends UniqueDataGenerator {
                         + last_name.toLowerCase())
                 + random.nextInt(100)
                 + "@"
-                + emailDomainsRandomLineProvider.getRandomLine();
+                + emailDomainsDict.nextWord();
     }
 
     private String generateRandomString(int stringLength) {

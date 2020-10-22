@@ -2,6 +2,7 @@ package com.codecool.bank_db.generators;
 
 import com.codecool.bank_db.file_handlers.RandomLineProvider;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,18 +18,17 @@ public class AddressGenerator extends UniqueDataGenerator {
     }
 
     @Override
-    public String generate() {
+    public void generate(PrintWriter writer) {
         Set<String> inserts = new HashSet<>(recordCount);
 
         while (inserts.size() < recordCount) {
             inserts.add(generateOne());
         }
 
-        StringBuilder sb = new StringBuilder(recordCount);
         for (String insert : inserts) {
-            sb.append(insert).append("\n");
+            writer.println(insert);
+            writer.println("\n");
         }
-        return sb.toString();
     }
 
     private String generateOne() {

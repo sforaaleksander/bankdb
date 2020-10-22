@@ -1,5 +1,6 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
 import java.util.Random;
 
 public class AtmGenerator extends DataGenerator {
@@ -14,8 +15,7 @@ public class AtmGenerator extends DataGenerator {
     }
 
     @Override
-    public String generate() {
-        StringBuilder sb = new StringBuilder();
+    public void generate(PrintWriter writer) {
         Random random = new Random();
         int addressId;
         boolean isBankProperty;
@@ -30,8 +30,7 @@ public class AtmGenerator extends DataGenerator {
             String command = String.format("insert into atms " +
                             " (address_id, is_banks_property, is_active)" +
                             " values (%d, %s, %s);\n", addressId, isBankProperty, isActive);
-            sb.append(command);
+            writer.println(command);
         }
-            return sb.toString();
     }
 }

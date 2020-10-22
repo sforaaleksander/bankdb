@@ -1,5 +1,6 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
 import java.util.Random;
 
 public class CustomerAddressGenerator extends DataGenerator {
@@ -20,8 +21,7 @@ public class CustomerAddressGenerator extends DataGenerator {
     }
 
     @Override
-    public String generate() {
-        StringBuilder mainString = new StringBuilder();
+    public void generate(PrintWriter writer) {
         for (int i = 1; i <= customerGenerator.getRecordCount(); i++) {
             if (customerGenerator.getAvailableIndexes().isEmpty() || addressGenerator.getAvailableIndexes().isEmpty()) {
                 break;
@@ -31,7 +31,7 @@ public class CustomerAddressGenerator extends DataGenerator {
             int address_type_id = 2; // create zameldowania address
             String defaultString = String.format("insert into customers_addresses(customer_id, address_id, address_type_id)" +
                     " values (%d, %d, %d);\n", customer_id, address_id, address_type_id);
-            mainString.append(defaultString);
+            writer.println(defaultString);
             if (addressGenerator.getAvailableIndexes().isEmpty()) {
                 break;
             }
@@ -40,10 +40,9 @@ public class CustomerAddressGenerator extends DataGenerator {
                 int second_address_type_id = 1;
                 String additionalAddress = String.format("insert into customers_addresses(customer_id, address_id, address_type_id)" +
                         " values (%d, %d, %d);\n", customer_id, second_address_id, second_address_type_id);
-                mainString.append(additionalAddress);
+                writer.println(additionalAddress);
             }
         }
-        return mainString.toString();
     }
 
     private int getCustomerID() {
