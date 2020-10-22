@@ -8,7 +8,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Pattern;
 
 public class CustomerGenerator extends UniqueDataGenerator {
     private final ThreadLocalRandom random;
@@ -47,14 +46,13 @@ public class CustomerGenerator extends UniqueDataGenerator {
         final String[] EMAIL_SEPARATORS = {".", "_", "-", ""};
         Customers customers = new Customers(recordCount);
 
-        Pattern specialCharactersPattern = Pattern.compile("[^\\w.-]+");
         for (int i = 0; i < recordCount; i++) {
-            sb.append(generateOne(customers, specialCharactersPattern, EMAIL_SEPARATORS)).append("\n");
+            sb.append(generateOne(customers, EMAIL_SEPARATORS)).append("\n");
         }
         return sb.toString();
     }
 
-    private String generateOne(Customers customers, Pattern pattern, String[] EMAIL_SEPARATORS) {
+    private String generateOne(Customers customers, String[] EMAIL_SEPARATORS) {
         String first_name, last_name, phone_number, email, password, pesel;
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
@@ -70,18 +68,19 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
-            email = pattern.matcher(
-                    first_name.toLowerCase().substring(0, random.nextInt(2, first_name.length()))
+            email =  first_name.toLowerCase().substring(0, random.nextInt(2, first_name.length()))
                             + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
-                            + last_name.toLowerCase()).replaceAll("")
-                    + random.nextInt(100)
-                    + "@"
-                    + emailDomainsRandomLineProvider.getRandomLine();
+                            + last_name.toLowerCase()
+                            + random.nextInt(100)
+                            + "@"
+                            + emailDomainsRandomLineProvider.getRandomLine();
             pesel = generatePesel(male);
+            if (arePolishLetters(email)) {
+                email = removePolishLetters(email);
+            }
         } while (customers.getPhoneNumbers().contains(phone_number) ||
                 customers.getEmails().contains(email) ||
                 customers.getPesels().contains(pesel));
-
         customers.addPhoneNumber(phone_number);
         customers.addEmail(email);
         customers.addPesel(pesel);
@@ -136,7 +135,7 @@ public class CustomerGenerator extends UniqueDataGenerator {
         return email;
     }
 
-    private boolean doesContainPolishLetters(String email) {
+    private boolean arePolishLetters(String email) {
         return Arrays.stream(polishLetters).anyMatch(email::contains);
     }
 }
