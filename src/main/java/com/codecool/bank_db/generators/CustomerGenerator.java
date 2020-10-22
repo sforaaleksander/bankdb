@@ -6,9 +6,7 @@ import com.codecool.bank_db.file_handlers.RandomLineProvider;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Pattern;
 
 public class CustomerGenerator extends UniqueDataGenerator {
     private final ThreadLocalRandom random;
@@ -17,6 +15,9 @@ public class CustomerGenerator extends UniqueDataGenerator {
     private final RandomLineProvider maleLastNameRandomLineProvider;
     private final RandomLineProvider femaleLastNameRandomLineProvider;
     private final RandomLineProvider emailDomainsRandomLineProvider;
+    private final String[] polishLetters = new String[]{"ą", "ę", "ć", "ż", "ź", "ó", "ł", "ń", "ś"};
+    private final String[] nonPolishLetters = new String[]{"a", "e", "c", "z", "z", "o", "l", "n", "s"};
+    private final String[] EMAIL_SEPARATORS = {".", "_", "-", ""};
     private MarketingConsentGenerator marketingConsentGenerator;
     private BankBranchGenerator bankBranchGenerator;
 
@@ -41,17 +42,15 @@ public class CustomerGenerator extends UniqueDataGenerator {
     @Override
     public String generate() {
         StringBuilder sb = new StringBuilder();
-        final String[] EMAIL_SEPARATORS = {".", "_", "-", ""};
         Customers customers = new Customers(recordCount);
 
-        Pattern specialCharactersPattern = Pattern.compile("[^\\w.-]+");
         for (int i = 0; i < recordCount; i++) {
-            sb.append(generateOne(customers, specialCharactersPattern, EMAIL_SEPARATORS)).append("\n");
+            sb.append(generateOne(customers)).append("\n");
         }
         return sb.toString();
     }
 
-    private String generateOne(Customers customers, Pattern pattern, String[] EMAIL_SEPARATORS) {
+    private String generateOne(Customers customers) {
         String first_name, last_name, phone_number, email, password, pesel;
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
@@ -67,24 +66,27 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
-            email = pattern.matcher(
-                    first_name.toLowerCase().substring(0, random.nextInt(2, first_name.length()))
-                            + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
-                            + last_name.toLowerCase()).replaceAll("")
-                    + random.nextInt(100)
-                    + "@"
-                    + emailDomainsRandomLineProvider.getRandomLine();
+            email = collectEmailElements(first_name, last_name);
             pesel = generatePesel(male);
         } while (customers.getPhoneNumbers().contains(phone_number) ||
                 customers.getEmails().contains(email) ||
                 customers.getPesels().contains(pesel));
-
         customers.addPhoneNumber(phone_number);
         customers.addEmail(email);
         customers.addPesel(pesel);
 
         return String.format("insert into customers(first_name, last_name, phone_number, email, password, pesel, marketing_cons_id, bank_branch_id)\n" +
                 "VALUES('%s', '%s', '%s', '%s', '%s', '%s', %s, %s);", first_name, last_name, phone_number, email, password, pesel, marketing_cons_id, bank_branch_id);
+    }
+
+    private String collectEmailElements(String first_name, String last_name) {
+        return removePolishLetters(
+                first_name.toLowerCase().substring(0, random.nextInt(2, first_name.length()))
+                        + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
+                        + last_name.toLowerCase())
+                + random.nextInt(100)
+                + "@"
+                + emailDomainsRandomLineProvider.getRandomLine();
     }
 
     private String generateRandomString(int stringLength) {
@@ -127,18 +129,9 @@ public class CustomerGenerator extends UniqueDataGenerator {
     }
 
     private String removePolishLetters(String email) {
-        return email.replaceAll("ó", "o")
-                .replaceAll("ł", "l")
-                .replaceAll("ż", "z")
-                .replaceAll("ź", "z")
-                .replaceAll("ś", "s")
-                .replaceAll("ć", "c")
-                .replaceAll("ę", "e")
-                .replaceAll("ą", "a")
-                .replaceAll("ń", "n");
-    }
-
-    private boolean doesContainPolishLetters(String email) {
-        return Arrays.stream(new String[]{"ą","ę","ć", "ż", "ź", "ó", "ł", "ń", "ś"}).anyMatch(email::contains);
+        for (int i = 0; i < polishLetters.length; i++) {
+            email = email.replace(polishLetters[i], nonPolishLetters[i]);
+        }
+        return email;
     }
 }
