@@ -1,13 +1,15 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
+
 public class ProvinceGenerator extends DataGenerator {
 
     public ProvinceGenerator() {
         super(16);
     }
 
-    public String generate() {
-        return """
+    public void generate(PrintWriter writer) {
+        writer.println("""
                 insert into provinces(name)
                 values ('dolnośląskie');
                 insert into provinces(name)
@@ -40,6 +42,6 @@ public class ProvinceGenerator extends DataGenerator {
                 values ('wielkopolskie');
                 insert into provinces(name)
                 values ('zachodniopomorskie');
-                """;
+                """);
     }
 }

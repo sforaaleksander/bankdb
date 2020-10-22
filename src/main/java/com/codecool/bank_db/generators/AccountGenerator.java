@@ -1,5 +1,6 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,8 +17,7 @@ public class AccountGenerator extends UniqueDataGenerator {
     }
 
     @Override
-    public String generate() {
-        StringBuilder sb = new StringBuilder();
+    public void generate(PrintWriter writer) {
         Random random = new Random();
         LinkedList<String> accountNumbers = generateAccountNumbers();
         int customerId;
@@ -38,17 +38,16 @@ public class AccountGenerator extends UniqueDataGenerator {
                                 " (customer_id, account_number, available_balance, booking_balance, date_opened, date_closed, is_active) " +
                                 " values (%d, '%s', %d, %d, '%s', '%s', %s);\n",
                         customerId, accountNo, availableBalance, bookingBalance, dateOpened, dateClosed, false);
-                sb.append(command);
+                writer.println(command);
             } else {
                 String command = String.format("insert into accounts " +
                                 " (customer_id, account_number, available_balance, booking_balance, date_opened, is_active) " +
                                 " values (%d, '%s', %d, %d, '%s', %s);\n",
                         customerId, accountNo, availableBalance, bookingBalance, dateOpened, true);
-                sb.append(command);
+                writer.println(command);
             }
         }
         customerGenerator.createAvailableIndexes();
-        return sb.toString();
     }
 
     private long getBookingBalanceByAvailable(Random random, long availableBalance) {

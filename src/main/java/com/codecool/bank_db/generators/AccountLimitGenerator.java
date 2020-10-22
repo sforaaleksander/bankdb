@@ -1,5 +1,6 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
 import java.util.Random;
 
 public class AccountLimitGenerator extends UniqueDataGenerator{
@@ -14,8 +15,7 @@ public class AccountLimitGenerator extends UniqueDataGenerator{
     }
 
     @Override
-    public String generate() {
-        StringBuilder sb = new StringBuilder();
+    public void generate(PrintWriter writer) {
         Random random = new Random();
         int customerId;
         int daily_withdraw_limit;
@@ -37,9 +37,8 @@ public class AccountLimitGenerator extends UniqueDataGenerator{
             String command = String.format("insert into account_limits values (%d, %d, %d, %d, %d);\n",
                                     customerId, daily_withdraw_limit, daily_contactless_limit,
                                     daily_transactions_limit, daily_card_payments_limit);
-            sb.append(command);
+            writer.println(command);
         }
         customerGenerator.createAvailableIndexes();
-        return sb.toString();
     }
 }

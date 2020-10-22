@@ -4,6 +4,7 @@ import com.codecool.bank_db.RandomDict;
 import com.codecool.bank_db.components.Customers;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -41,14 +42,13 @@ public class CustomerGenerator extends UniqueDataGenerator {
     }
 
     @Override
-    public String generate() {
-        StringBuilder sb = new StringBuilder();
+    public void generate(PrintWriter writer) {
         Customers customers = new Customers(recordCount);
 
         for (int i = 0; i < recordCount; i++) {
-            sb.append(generateOne(customers)).append("\n");
+            writer.println(generateOne(customers));
+            writer.println("\n");
         }
-        return sb.toString();
     }
 
     private String generateOne(Customers customers) {
