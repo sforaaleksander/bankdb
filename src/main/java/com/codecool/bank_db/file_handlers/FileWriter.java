@@ -1,4 +1,4 @@
-package com.codecool.bank_db.fileWriter;
+package com.codecool.bank_db.file_handlers;
 
 import com.codecool.bank_db.generators.*;
 

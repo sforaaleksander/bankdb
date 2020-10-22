@@ -1,7 +1,7 @@
 package com.codecool.bank_db.generators;
 
 import com.codecool.bank_db.components.Customers;
-import com.codecool.bank_db.components.Emails;
+import com.codecool.bank_db.file_handlers.RandomLineProvider;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -12,10 +12,12 @@ public class CustomerGenerator extends UniqueDataGenerator {
     private ThreadLocalRandom random;
     private MarketingConsentGenerator marketingConsentGenerator;
     private BankBranchGenerator bankBranchGenerator;
+    private RandomLineProvider randomLineProvider;
 
     public CustomerGenerator(Integer recordCount) {
         super(recordCount);
         random = ThreadLocalRandom.current();
+        randomLineProvider = new RandomLineProvider();
     }
 
     public void setMarketingConsentGenerator(MarketingConsentGenerator marketingConsentGenerator) {
@@ -57,7 +59,8 @@ public class CustomerGenerator extends UniqueDataGenerator {
                     + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
                     + last_name
                     + random.nextInt(100)
-                    + "@" + Emails.EMAILS[random.nextInt(Emails.EMAILS.length)];
+                    + "@"
+                    + randomLineProvider.getRandomLine("src/main/resources/email_domains.txt");
             pesel = generatePesel(male);
         } while (customers.getPhoneNumbers().contains(phone_number) ||
                 customers.getEmails().contains(email) ||

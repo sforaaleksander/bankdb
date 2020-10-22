@@ -1,6 +1,6 @@
 package com.codecool.bank_db;
 
-import com.codecool.bank_db.fileWriter.FileWriter;
+import com.codecool.bank_db.file_handlers.FileWriter;
 
 import java.io.IOException;
 
