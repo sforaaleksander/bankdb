@@ -7,17 +7,15 @@ import java.util.Scanner;
 
 public class RandomLineProvider {
     private final Random random;
+    private final File f;
     private Scanner scanner;
-    private File f;
 
     public RandomLineProvider(String fileName) {
-        File f = new File(fileName);
+        f = new File(fileName);
         this.random = new Random();
-        scanner = null;
-        initScanner(f);
     }
 
-    private void initScanner(File f) {
+    private void initScanner() {
         try {
             this.scanner = new Scanner(f);
         } catch (FileNotFoundException e) {
@@ -26,14 +24,16 @@ public class RandomLineProvider {
     }
 
     public String getRandomLine() {
-        String result = null;
+        String result = " ";
         int n = 0;
+        initScanner();
         while (scanner.hasNext()) {
             ++n;
             String line = scanner.nextLine();
             if (random.nextInt(n) == 0)
                 result = line;
         }
+        scanner.close();
         return result;
     }
 }
