@@ -1,7 +1,7 @@
 package com.codecool.bank_db.components;
 
 public class Streets {
-    static final String[] STREETS = {
+    public static final String[] STREETS = {
             "ul. Świętokrzyska",
             "ul. Jasna",
             "ul. Marszałkowska",

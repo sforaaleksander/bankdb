@@ -1,7 +1,7 @@
 package com.codecool.bank_db.components;
 
 public class Emails {
-    static final String[] EMAILS = {
+    public static final String[] EMAILS = {
             "hitmail.com",
             "rxdoc.biz",
             "cox.com",
