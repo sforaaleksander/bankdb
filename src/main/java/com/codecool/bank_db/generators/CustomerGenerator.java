@@ -6,6 +6,7 @@ import com.codecool.bank_db.file_handlers.RandomLineProvider;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -125,5 +126,21 @@ public class CustomerGenerator extends UniqueDataGenerator {
             checksum += Integer.parseInt(pesel.substring(i, i + 1)) * multiples[i % multiples.length];
         }
         return String.valueOf((10 - checksum % 10) % 10);
+    }
+
+    private String removePolishLetters(String email) {
+        return email.replaceAll("ó", "o")
+                .replaceAll("ł", "l")
+                .replaceAll("ż", "z")
+                .replaceAll("ź", "z")
+                .replaceAll("ś", "s")
+                .replaceAll("ć", "c")
+                .replaceAll("ę", "e")
+                .replaceAll("ą", "a")
+                .replaceAll("ń", "n");
+    }
+
+    private boolean doesContainPolishLetters(String email) {
+        return Arrays.stream(new String[]{"ą","ę","ć", "ż", "ź", "ó", "ł", "ń", "ś"}).anyMatch(email::contains);
     }
 }
