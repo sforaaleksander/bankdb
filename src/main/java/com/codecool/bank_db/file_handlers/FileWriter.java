@@ -39,11 +39,20 @@ public class FileWriter {
 
         cardGenerator.setSetOfCardNumbers();
 
-        DataGenerator[] generators = {marketingConsentGenerator, provinceGenerator, transactionTypeGenerator,
-                                        addressTypeGenerator, addressGenerator, bankBranchGenerator, atmGenerator,
-                                        customerGenerator, accountLimitGenerator,
-                                        accountGenerator, cardGenerator, customerAddressGenerator};
-
+        DataGenerator[] generators = {
+                marketingConsentGenerator,
+                provinceGenerator,
+                transactionTypeGenerator,
+                addressTypeGenerator,
+                addressGenerator,
+                bankBranchGenerator,
+                atmGenerator,
+                customerGenerator,
+                accountLimitGenerator,
+                accountGenerator,
+                cardGenerator,
+                customerAddressGenerator
+        };
         PrintWriter writer = new PrintWriter("db_populate.sql", StandardCharsets.UTF_8);
 
         for (DataGenerator generator : generators) {
