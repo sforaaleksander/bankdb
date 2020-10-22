@@ -20,6 +20,8 @@ public class CustomerGenerator extends UniqueDataGenerator {
     private BankBranchGenerator bankBranchGenerator;
     private final String[] polishLetters = new String[] {"ą", "ę", "ć", "ż", "ź", "ó", "ł", "ń", "ś"};
     private final String[] nonPolishLetters = new String[] {"a", "e", "c", "z", "z", "o", "l", "n", "s"};
+    private final String[] EMAIL_SEPARATORS = {".", "_", "-", ""};
+
 
 
     public CustomerGenerator(Integer recordCount) {
@@ -43,16 +45,15 @@ public class CustomerGenerator extends UniqueDataGenerator {
     @Override
     public String generate() {
         StringBuilder sb = new StringBuilder();
-        final String[] EMAIL_SEPARATORS = {".", "_", "-", ""};
         Customers customers = new Customers(recordCount);
 
         for (int i = 0; i < recordCount; i++) {
-            sb.append(generateOne(customers, EMAIL_SEPARATORS)).append("\n");
+            sb.append(generateOne(customers)).append("\n");
         }
         return sb.toString();
     }
 
-    private String generateOne(Customers customers, String[] EMAIL_SEPARATORS) {
+    private String generateOne(Customers customers) {
         String first_name, last_name, phone_number, email, password, pesel;
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
@@ -68,16 +69,9 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
-            email =  first_name.toLowerCase().substring(0, random.nextInt(2, first_name.length()))
-                            + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
-                            + last_name.toLowerCase()
-                            + random.nextInt(100)
-                            + "@"
-                            + emailDomainsRandomLineProvider.getRandomLine();
+            email = collectEmailElements(first_name, last_name);
             pesel = generatePesel(male);
-            if (arePolishLetters(email)) {
-                email = removePolishLetters(email);
-            }
+            email = removePolishLetters(email);
         } while (customers.getPhoneNumbers().contains(phone_number) ||
                 customers.getEmails().contains(email) ||
                 customers.getPesels().contains(pesel));
@@ -87,6 +81,15 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
         return String.format("insert into customers(first_name, last_name, phone_number, email, password, pesel, marketing_cons_id, bank_branch_id)\n" +
                 "VALUES('%s', '%s', '%s', '%s', '%s', '%s', %s, %s);", first_name, last_name, phone_number, email, password, pesel, marketing_cons_id, bank_branch_id);
+    }
+
+    private String collectEmailElements(String first_name, String last_name) {
+        return first_name.toLowerCase().substring(0, random.nextInt(2, first_name.length()))
+                        + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
+                        + last_name.toLowerCase()
+                        + random.nextInt(100)
+                        + "@"
+                        + emailDomainsRandomLineProvider.getRandomLine();
     }
 
     private String generateRandomString(int stringLength) {
@@ -133,9 +136,5 @@ public class CustomerGenerator extends UniqueDataGenerator {
             email = email.replace(polishLetters[i], nonPolishLetters[i]);
         }
         return email;
-    }
-
-    private boolean arePolishLetters(String email) {
-        return Arrays.stream(polishLetters).anyMatch(email::contains);
     }
 }
