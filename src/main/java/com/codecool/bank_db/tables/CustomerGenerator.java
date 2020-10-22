@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
 
 public class CustomerGenerator extends UniqueDataGenerator {
     private final ThreadLocalRandom random;
@@ -36,13 +37,15 @@ public class CustomerGenerator extends UniqueDataGenerator {
         StringBuilder sb = new StringBuilder();
 
         Customers customers = new Customers(recordCount);
+
+        Pattern specialCharactersPattern = Pattern.compile("[^\\w]+");
         for (int i = 0; i < recordCount; i++) {
-            sb.append(generateOne(customers)).append("\n");
+            sb.append(generateOne(customers, specialCharactersPattern)).append("\n");
         }
         return sb.toString();
     }
 
-    private String generateOne(Customers customers) {
+    private String generateOne(Customers customers, Pattern pattern) {
         String first_name, last_name, phone_number, email, password, pesel;
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
@@ -59,7 +62,7 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
-            email = (first_name + "_" + last_name).replaceAll("[^\\w]+", "")
+            email = pattern.matcher(first_name + "_" + last_name).replaceAll("")
                     + random.nextInt(0, 100) + "@gmail.com";
             pesel = generatePesel(male);
         } while (customers.getPhoneNumbers().contains(phone_number) ||

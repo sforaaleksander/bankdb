@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class NameGenerator {
     private static final int FIRST_NAME_LIMIT = 5000;
-    private static final int LAST_NAME_LIMIT = 50000;
+    private static final int LAST_NAME_LIMIT = 10000;
     private final Connection connection;
     String[] NAMES;
     String[] FUNCTION_NAMES;
