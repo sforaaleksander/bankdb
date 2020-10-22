@@ -6,24 +6,34 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class RandomLineProvider {
-    public String getRandomLine(String fileName) {
-        File f = new File(fileName);
-        String result = null;
-        Random rand = new Random();
-        int n = 0;
-        Scanner sc = null;
+    private final Random random;
+    private final File f;
+    private Scanner scanner;
+
+    public RandomLineProvider(String fileName) {
+        f = new File(fileName);
+        this.random = new Random();
+    }
+
+    private void initScanner() {
         try {
-            sc = new Scanner(f);
+            this.scanner = new Scanner(f);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        while (sc.hasNext()) {
+    }
+
+    public String getRandomLine() {
+        String result = " ";
+        int n = 0;
+        initScanner();
+        while (scanner.hasNext()) {
             ++n;
-            String line = sc.nextLine();
-            if (rand.nextInt(n) == 0)
+            String line = scanner.nextLine();
+            if (random.nextInt(n) == 0)
                 result = line;
         }
-        sc.close();
+        scanner.close();
         return result;
     }
 }

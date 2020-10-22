@@ -13,7 +13,7 @@ public class AddressGenerator extends UniqueDataGenerator {
 
     public AddressGenerator(Integer recordCount) {
         super(recordCount);
-        randomLineProvider = new RandomLineProvider();
+        randomLineProvider = new RandomLineProvider("src/main/resources/streets.txt");
     }
 
     @Override
@@ -55,7 +55,7 @@ public class AddressGenerator extends UniqueDataGenerator {
 
         String[] provinceCities = cities.get(provinceId);
         String city = provinceCities[random.nextInt(0, provinceCities.length)];
-        String street = randomLineProvider.getRandomLine("src/main/resources/streets.txt");
+        String street = randomLineProvider.getRandomLine();
         String number = random.nextInt(0, 100) + "/" + random.nextInt(0, 200);
         String postcode = String.format("%05d", random.nextInt(1, 100_000));
 
