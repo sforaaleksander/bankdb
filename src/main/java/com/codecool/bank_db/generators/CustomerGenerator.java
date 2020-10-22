@@ -44,11 +44,11 @@ public class CustomerGenerator extends UniqueDataGenerator {
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
         first_name = male // TODO use db to generate names
-                ? Customers.MALE_NAMES[random.nextInt(Customers.MALE_NAMES.length)]
-                : Customers.FEMALE_NAMES[random.nextInt(Customers.FEMALE_NAMES.length)];
+                ? randomLineProvider.getRandomLine("src/main/resources/male_first_names.txt")
+                : randomLineProvider.getRandomLine("src/main/resources/female_first_names.txt");
         last_name = male
-                ? Customers.MALE_SURNAMES[random.nextInt(Customers.MALE_SURNAMES.length)]
-                : Customers.FEMALE_SURNAMES[random.nextInt(Customers.FEMALE_SURNAMES.length)];
+                ? randomLineProvider.getRandomLine("src/main/resources/male_last_names.txt")
+                : randomLineProvider.getRandomLine("src/main/resources/female_last_names.txt");
         password = generateRandomString(20);
         marketing_cons_id = random.nextInt(1, marketingConsentGenerator.getRecordCount());
         bank_branch_id = random.nextInt(1, bankBranchGenerator.getRecordCount());

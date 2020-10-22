@@ -1,6 +1,6 @@
 package com.codecool.bank_db.generators;
 
-import com.codecool.bank_db.components.Streets;
+import com.codecool.bank_db.file_handlers.RandomLineProvider;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,9 +9,11 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AddressGenerator extends UniqueDataGenerator {
+    private RandomLineProvider randomLineProvider;
 
     public AddressGenerator(Integer recordCount) {
         super(recordCount);
+        randomLineProvider = new RandomLineProvider();
     }
 
     @Override
@@ -53,7 +55,7 @@ public class AddressGenerator extends UniqueDataGenerator {
 
         String[] provinceCities = cities.get(provinceId);
         String city = provinceCities[random.nextInt(0, provinceCities.length)];
-        String street = Streets.STREETS[random.nextInt(0, Streets.STREETS.length)];
+        String street = randomLineProvider.getRandomLine("src/main/resources/streets.txt");
         String number = random.nextInt(0, 100) + "/" + random.nextInt(0, 200);
         String postcode = String.format("%05d", random.nextInt(1, 100_000));
 
