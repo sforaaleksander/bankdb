@@ -19,6 +19,9 @@ public class CustomerGenerator extends UniqueDataGenerator {
     private final RandomLineProvider emailDomainsRandomLineProvider;
     private MarketingConsentGenerator marketingConsentGenerator;
     private BankBranchGenerator bankBranchGenerator;
+    private final String[] polishLetters = new String[] {"ą", "ę", "ć", "ż", "ź", "ó", "ł", "ń", "ś"};
+    private final String[] nonPolishLetters = new String[] {"a", "e", "c", "z", "z", "o", "l", "n", "s"};
+
 
     public CustomerGenerator(Integer recordCount) {
         super(recordCount);
@@ -127,18 +130,13 @@ public class CustomerGenerator extends UniqueDataGenerator {
     }
 
     private String removePolishLetters(String email) {
-        return email.replaceAll("ó", "o")
-                .replaceAll("ł", "l")
-                .replaceAll("ż", "z")
-                .replaceAll("ź", "z")
-                .replaceAll("ś", "s")
-                .replaceAll("ć", "c")
-                .replaceAll("ę", "e")
-                .replaceAll("ą", "a")
-                .replaceAll("ń", "n");
+        for (int i=0;i<polishLetters.length;i++) {
+            email = email.replace(polishLetters[i], nonPolishLetters[i]);
+        }
+        return email;
     }
 
     private boolean doesContainPolishLetters(String email) {
-        return Arrays.stream(new String[]{"ą","ę","ć", "ż", "ź", "ó", "ł", "ń", "ś"}).anyMatch(email::contains);
+        return Arrays.stream(polishLetters).anyMatch(email::contains);
     }
 }

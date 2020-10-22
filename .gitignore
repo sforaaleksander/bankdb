@@ -4,4 +4,3 @@ target/
 *.ddl
 db_populate.sql
 run.txt
-db_populate_small_set.sql
