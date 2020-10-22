@@ -25,7 +25,7 @@ public class RandomDict {
         try {
             for (String line; (line = br.readLine()) != null; ) {
                 if (line.indexOf('\'') >= 0) continue;
-                words.add(line.toLowerCase());
+                words.add(line);
             }
         } finally {
             br.close();
