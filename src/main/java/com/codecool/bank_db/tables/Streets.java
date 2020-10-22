@@ -1,7 +1,7 @@
 package com.codecool.bank_db.tables;
 
 public class Streets {
-    final static String[] streets = {
+    static final String[] STREETS = {
             "ul. Świętokrzyska",
             "ul. Jasna",
             "ul. Marszałkowska",
@@ -1154,6 +1154,6 @@ public class Streets {
             "ul. Studzienna",
             "ul. Budziszyńska",
             "ul. Radzanowska",
-            "ul. Karlińskiego Kacpra",
+            "ul. Karlińskiego Kacpra"
     };
 }
