@@ -7,16 +7,17 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
 
 public class CustomerGenerator extends UniqueDataGenerator {
-    private ThreadLocalRandom random;
+    private final ThreadLocalRandom random;
     private MarketingConsentGenerator marketingConsentGenerator;
     private BankBranchGenerator bankBranchGenerator;
-    private RandomLineProvider maleFirstNameRandomLineProvider;
-    private RandomLineProvider femaleFirstNameRandomLineProvider;
-    private RandomLineProvider maleLastNameRandomLineProvider;
-    private RandomLineProvider femaleLastNameRandomLineProvider;
-    private RandomLineProvider emailDomainsRandomLineProvider;
+    private final RandomLineProvider maleFirstNameRandomLineProvider;
+    private final RandomLineProvider femaleFirstNameRandomLineProvider;
+    private final RandomLineProvider maleLastNameRandomLineProvider;
+    private final RandomLineProvider femaleLastNameRandomLineProvider;
+    private final RandomLineProvider emailDomainsRandomLineProvider;
 
 
     public CustomerGenerator(Integer recordCount) {
@@ -43,13 +44,15 @@ public class CustomerGenerator extends UniqueDataGenerator {
         StringBuilder sb = new StringBuilder();
         final String[] EMAIL_SEPARATORS = {".", "_", "-", ""};
         Customers customers = new Customers(recordCount);
+
+        Pattern specialCharactersPattern = Pattern.compile("[^\\w.-]+");
         for (int i = 0; i < recordCount; i++) {
-            sb.append(generateOne(customers, EMAIL_SEPARATORS)).append("\n");
+            sb.append(generateOne(customers, specialCharactersPattern, EMAIL_SEPARATORS)).append("\n");
         }
         return sb.toString();
     }
 
-    private String generateOne(Customers customers, String[] EMAIL_SEPARATORS) {
+    private String generateOne(Customers customers, Pattern pattern, String[] EMAIL_SEPARATORS) {
         String first_name, last_name, phone_number, email, password, pesel;
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
@@ -65,9 +68,10 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
-            email = first_name.substring(1, random.nextInt(1, first_name.length()))
+            email = pattern.matcher(
+                    first_name.substring(0, random.nextInt(1, first_name.length()))
                     + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
-                    + last_name
+                    + last_name).replaceAll("")
                     + random.nextInt(100)
                     + "@"
                     + emailDomainsRandomLineProvider.getRandomLine();
