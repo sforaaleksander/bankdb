@@ -1,4 +1,6 @@
-package com.codecool.bank_db.tables;
+package com.codecool.bank_db.generators;
+
+import com.codecool.bank_db.components.Streets;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package com.codecool.bank_db.tables;
+package com.codecool.bank_db.components;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package com.codecool.bank_db.tables;
+package com.codecool.bank_db.components;
 
 public class Emails {
     static final String[] EMAILS = {

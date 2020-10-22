@@ -1,6 +1,6 @@
-package com.codecool.bank_db.FileWriter;
+package com.codecool.bank_db.fileWriter;
 
-import com.codecool.bank_db.tables.*;
+import com.codecool.bank_db.generators.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;

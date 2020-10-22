@@ -1,4 +1,4 @@
-package com.codecool.bank_db.tables;
+package com.codecool.bank_db.components;
 
 public class Streets {
     static final String[] STREETS = {

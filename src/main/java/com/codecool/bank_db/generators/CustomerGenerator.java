@@ -1,4 +1,7 @@
-package com.codecool.bank_db.tables;
+package com.codecool.bank_db.generators;
+
+import com.codecool.bank_db.components.Customers;
+import com.codecool.bank_db.components.Emails;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

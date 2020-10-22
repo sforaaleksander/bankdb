@@ -1,4 +1,4 @@
-package com.codecool.bank_db.tables;
+package com.codecool.bank_db.generators;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
