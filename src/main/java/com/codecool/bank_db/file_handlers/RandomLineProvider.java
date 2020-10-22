@@ -34,7 +34,6 @@ public class RandomLineProvider {
             if (random.nextInt(n) == 0)
                 result = line;
         }
-        scanner.close();
         return result;
     }
 }
