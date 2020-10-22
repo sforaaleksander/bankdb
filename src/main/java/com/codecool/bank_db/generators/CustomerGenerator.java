@@ -11,14 +11,13 @@ import java.util.regex.Pattern;
 
 public class CustomerGenerator extends UniqueDataGenerator {
     private final ThreadLocalRandom random;
-    private MarketingConsentGenerator marketingConsentGenerator;
-    private BankBranchGenerator bankBranchGenerator;
     private final RandomLineProvider maleFirstNameRandomLineProvider;
     private final RandomLineProvider femaleFirstNameRandomLineProvider;
     private final RandomLineProvider maleLastNameRandomLineProvider;
     private final RandomLineProvider femaleLastNameRandomLineProvider;
     private final RandomLineProvider emailDomainsRandomLineProvider;
-
+    private MarketingConsentGenerator marketingConsentGenerator;
+    private BankBranchGenerator bankBranchGenerator;
 
     public CustomerGenerator(Integer recordCount) {
         super(recordCount);
@@ -28,7 +27,6 @@ public class CustomerGenerator extends UniqueDataGenerator {
         maleLastNameRandomLineProvider = new RandomLineProvider("src/main/resources/male_last_names.txt");
         femaleLastNameRandomLineProvider = new RandomLineProvider("src/main/resources/female_last_names.txt");
         emailDomainsRandomLineProvider = new RandomLineProvider("src/main/resources/email_domains.txt");
-
     }
 
     public void setMarketingConsentGenerator(MarketingConsentGenerator marketingConsentGenerator) {
@@ -69,9 +67,9 @@ public class CustomerGenerator extends UniqueDataGenerator {
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
             email = pattern.matcher(
-                    first_name.substring(0, random.nextInt(1, first_name.length()))
-                    + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
-                    + last_name).replaceAll("")
+                    first_name.toLowerCase().substring(0, random.nextInt(2, first_name.length()))
+                            + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
+                            + last_name.toLowerCase()).replaceAll("")
                     + random.nextInt(100)
                     + "@"
                     + emailDomainsRandomLineProvider.getRandomLine();
@@ -81,7 +79,7 @@ public class CustomerGenerator extends UniqueDataGenerator {
                 customers.getPesels().contains(pesel));
 
         customers.addPhoneNumber(phone_number);
-        customers.addEmail(email.toLowerCase());
+        customers.addEmail(email);
         customers.addPesel(pesel);
 
         return String.format("insert into customers(first_name, last_name, phone_number, email, password, pesel, marketing_cons_id, bank_branch_id)\n" +
