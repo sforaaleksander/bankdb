@@ -67,11 +67,14 @@ public class CustomerGenerator extends UniqueDataGenerator {
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
+        } while (customers.getPhoneNumbers().contains(phone_number));
+        do {
             email = collectEmailElements(first_name, last_name);
+        } while (customers.getEmails().contains(email));
+        do {
             pesel = generatePesel(male);
-        } while (customers.getPhoneNumbers().contains(phone_number) ||
-                customers.getEmails().contains(email) ||
-                customers.getPesels().contains(pesel));
+        } while (customers.getPesels().contains(pesel));
+
         customers.addPhoneNumber(phone_number);
         customers.addEmail(email);
         customers.addPesel(pesel);
