@@ -51,7 +51,7 @@ public class AddressGenerator extends UniqueDataGenerator {
 
         String[] provinceCities = cities.get(provinceId);
         String city = provinceCities[random.nextInt(0, provinceCities.length)];
-        String street = Streets.streets[random.nextInt(0, Streets.streets.length)];
+        String street = Streets.STREETS[random.nextInt(0, Streets.STREETS.length)];
         String number = random.nextInt(0, 100) + "/" + random.nextInt(0, 200);
         String postcode = String.format("%05d", random.nextInt(1, 100_000));
 

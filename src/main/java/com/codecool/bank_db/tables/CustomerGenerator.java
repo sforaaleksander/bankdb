@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CustomerGenerator extends UniqueDataGenerator {
@@ -35,17 +36,17 @@ public class CustomerGenerator extends UniqueDataGenerator {
         nameGenerator.createAndPopulateTablesAndFunctions();
 
         StringBuilder sb = new StringBuilder();
-
+        final String[] EMAIL_SEPARATORS = {".", "_", "-", ""};
         Customers customers = new Customers(recordCount);
 
-        Pattern specialCharactersPattern = Pattern.compile("[^\\w]+");
+        Pattern specialCharactersPattern = Pattern.compile("[^\\w.-]+");
         for (int i = 0; i < recordCount; i++) {
-            sb.append(generateOne(customers, specialCharactersPattern)).append("\n");
+            sb.append(generateOne(customers, specialCharactersPattern, EMAIL_SEPARATORS)).append("\n");
         }
         return sb.toString();
     }
 
-    private String generateOne(Customers customers, Pattern pattern) {
+    private String generateOne(Customers customers, Pattern pattern, String[] EMAIL_SEPARATORS) {
         String first_name, last_name, phone_number, email, password, pesel;
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
@@ -55,26 +56,36 @@ public class CustomerGenerator extends UniqueDataGenerator {
         last_name = male
                 ? nameGenerator.getRandomMaleLastName().replace("'", "")
                 : nameGenerator.getRandomFemaleLastName().replace("'", "");
-
         password = generateRandomString(20);
         marketing_cons_id = random.nextInt(1, marketingConsentGenerator.getRecordCount());
         bank_branch_id = random.nextInt(1, bankBranchGenerator.getRecordCount());
 
         do {
             phone_number = "" + random.nextLong(500_000_000L, 900_000_000L);
-            email = pattern.matcher(first_name + "_" + last_name).replaceAll("")
-                    + random.nextInt(0, 100) + "@gmail.com";
+            email = generateEmail(pattern.matcher(
+                    first_name.substring(1, random.nextInt(1, first_name.length()))
+                            + EMAIL_SEPARATORS[random.nextInt(EMAIL_SEPARATORS.length)]
+                            + last_name));
             pesel = generatePesel(male);
         } while (customers.getPhoneNumbers().contains(phone_number) ||
                 customers.getEmails().contains(email) ||
                 customers.getPesels().contains(pesel));
 
         customers.addPhoneNumber(phone_number);
-        customers.addEmail(email);
+        customers.addEmail(email.toLowerCase());
         customers.addPesel(pesel);
 
         return String.format("insert into customers(first_name, last_name, phone_number, email, password, pesel, marketing_cons_id, bank_branch_id)\n" +
                 "VALUES('%s', '%s', '%s', '%s', '%s', '%s', %s, %s);", first_name, last_name, phone_number, email, password, pesel, marketing_cons_id, bank_branch_id);
+    }
+
+    private String generateEmail(Matcher matcher) {
+        String email;
+        email = matcher
+                .replaceAll("")
+                + random.nextInt(100)
+                + "@" + Emails.EMAILS[random.nextInt(Emails.EMAILS.length)];
+        return email;
     }
 
     private String generateRandomString(int stringLength) {
@@ -101,8 +112,8 @@ public class CustomerGenerator extends UniqueDataGenerator {
                 + String.format("%02d", birthDate.getYear() % 100)
                 + String.format("%02d", birthDate.getYear() < 2000 ? birthDate.getMonthValue() : birthDate.getMonthValue() + 20)
                 + String.format("%02d", birthDate.getDayOfMonth())
-                + String.format("%03d", random.nextInt(0, 1000))
-                + (male ? random.nextInt(0, 5) * 2 + 1 : random.nextInt(0, 5) * 2);
+                + String.format("%03d", random.nextInt(1000))
+                + (male ? random.nextInt(5) * 2 + 1 : random.nextInt(5) * 2);
         pesel += calculateLastPeselDigit(pesel);
         return pesel;
     }
