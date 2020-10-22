@@ -12,12 +12,22 @@ public class CustomerGenerator extends UniqueDataGenerator {
     private ThreadLocalRandom random;
     private MarketingConsentGenerator marketingConsentGenerator;
     private BankBranchGenerator bankBranchGenerator;
-    private RandomLineProvider randomLineProvider;
+    private RandomLineProvider maleFirstNameRandomLineProvider;
+    private RandomLineProvider femaleFirstNameRandomLineProvider;
+    private RandomLineProvider maleLastNameRandomLineProvider;
+    private RandomLineProvider femaleLastNameRandomLineProvider;
+    private RandomLineProvider emailDomainsRandomLineProvider;
+
 
     public CustomerGenerator(Integer recordCount) {
         super(recordCount);
         random = ThreadLocalRandom.current();
-        randomLineProvider = new RandomLineProvider();
+        maleFirstNameRandomLineProvider = new RandomLineProvider("src/main/resources/male_first_names.txt");
+        femaleFirstNameRandomLineProvider = new RandomLineProvider("src/main/resources/female_first_names.txt");
+        maleLastNameRandomLineProvider = new RandomLineProvider("src/main/resources/male_last_names.txt");
+        femaleLastNameRandomLineProvider = new RandomLineProvider("src/main/resources/female_last_names.txt");
+        emailDomainsRandomLineProvider = new RandomLineProvider("src/main/resources/email_domains.txt");
+
     }
 
     public void setMarketingConsentGenerator(MarketingConsentGenerator marketingConsentGenerator) {
@@ -44,11 +54,11 @@ public class CustomerGenerator extends UniqueDataGenerator {
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
         first_name = male // TODO use db to generate names
-                ? randomLineProvider.getRandomLine("src/main/resources/male_first_names.txt")
-                : randomLineProvider.getRandomLine("src/main/resources/female_first_names.txt");
+                ? maleFirstNameRandomLineProvider.getRandomLine()
+                : femaleFirstNameRandomLineProvider.getRandomLine();
         last_name = male
-                ? randomLineProvider.getRandomLine("src/main/resources/male_last_names.txt")
-                : randomLineProvider.getRandomLine("src/main/resources/female_last_names.txt");
+                ? maleLastNameRandomLineProvider.getRandomLine()
+                : femaleLastNameRandomLineProvider.getRandomLine();
         password = generateRandomString(20);
         marketing_cons_id = random.nextInt(1, marketingConsentGenerator.getRecordCount());
         bank_branch_id = random.nextInt(1, bankBranchGenerator.getRecordCount());
@@ -60,7 +70,7 @@ public class CustomerGenerator extends UniqueDataGenerator {
                     + last_name
                     + random.nextInt(100)
                     + "@"
-                    + randomLineProvider.getRandomLine("src/main/resources/email_domains.txt");
+                    + emailDomainsRandomLineProvider.getRandomLine();
             pesel = generatePesel(male);
         } while (customers.getPhoneNumbers().contains(phone_number) ||
                 customers.getEmails().contains(email) ||
