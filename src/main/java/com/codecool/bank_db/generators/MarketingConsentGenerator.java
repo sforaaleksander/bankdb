@@ -1,13 +1,15 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
+
 public class MarketingConsentGenerator extends DataGenerator {
 
     public MarketingConsentGenerator() {
         super(4);
     }
 
-    public String generate() {
-        return """
+    public void generate(PrintWriter writer) {
+        writer.println("""
                 insert into marketing_consents(electronic_marketing, phone_marketing)
                 VALUES (false, false);
                 insert into marketing_consents(electronic_marketing, phone_marketing)
@@ -16,6 +18,6 @@ public class MarketingConsentGenerator extends DataGenerator {
                 VALUES (true, false);
                 insert into marketing_consents(electronic_marketing, phone_marketing)
                 VALUES (true, true);
-                """;
+                """);
     }
 }

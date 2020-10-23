@@ -1,5 +1,7 @@
 package com.codecool.bank_db.generators;
 
+import java.io.PrintWriter;
+
 public class BankBranchGenerator extends DataGenerator {
     private AddressGenerator addressGenerator;
 
@@ -12,8 +14,7 @@ public class BankBranchGenerator extends DataGenerator {
     }
 
     @Override
-    public String generate() {
-        StringBuilder sb = new StringBuilder();
+    public void generate(PrintWriter writer) {
         for (int i=0;i<recordCount;i++){
             if (addressGenerator.getAvailableIndexes().isEmpty()) {
                 break;
@@ -21,8 +22,7 @@ public class BankBranchGenerator extends DataGenerator {
             int addressId = addressGenerator.getAvailableIndexes().poll();
             String command = String.format("insert into bank_branches (address_id) values (%d);\n",
                     addressId);
-            sb.append(command);
+            writer.println(command);
         }
-        return sb.toString();
     }
 }
