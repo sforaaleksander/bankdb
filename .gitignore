@@ -5,3 +5,4 @@ target/
 db_populate.sql
 db_populate_big.sql
 run.txt
+db_populate_300k.sql
