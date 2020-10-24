@@ -55,7 +55,7 @@ public class CustomerGenerator extends UniqueDataGenerator {
         String first_name, last_name, phone_number, email, password, pesel;
         int marketing_cons_id, bank_branch_id;
         boolean male = random.nextBoolean();
-        first_name = male // TODO use db to generate names
+        first_name = male
                 ? maleFirstNameDict.nextWord()
                 : femaleFirstNameDict.nextWord();
         last_name = male
