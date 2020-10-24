@@ -3,4 +3,5 @@ target/
 *.iml
 *.ddl
 db_populate.sql
+db_populate_big.sql
 run.txt
