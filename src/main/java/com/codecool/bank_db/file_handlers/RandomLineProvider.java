@@ -1,39 +1,50 @@
 package com.codecool.bank_db.file_handlers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Random;
-import java.util.Scanner;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomLineProvider {
-    private final Random random;
-    private final File f;
-    private Scanner scanner;
+    private final FileChannel channel;
+    private final ThreadLocalRandom random;
+    private final int maxLineLength;
 
-    public RandomLineProvider(String fileName) {
-        f = new File(fileName);
-        this.random = new Random();
+    public RandomLineProvider(String filePath) throws IOException {
+        random = ThreadLocalRandom.current();
+        channel = new FileInputStream(new File(filePath)).getChannel();
+        maxLineLength = getMaxLineLength(filePath);
     }
 
-    private void initScanner() {
-        try {
-            this.scanner = new Scanner(f);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+    private int getMaxLineLength(String filename) throws IOException {
+        int max = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            for (String line; (line = br.readLine()) != null; ) {
+                if (line.length() > max) {
+                    max = line.length();
+                }
+            }
         }
+        return max + 3;
     }
 
-    public String getRandomLine() {
-        String result = " ";
-        int n = 0;
-        initScanner();
-        while (scanner.hasNext()) {
-            ++n;
-            String line = scanner.nextLine();
-            if (random.nextInt(n) == 0)
-                result = line;
+    public String getRandomLine() throws IOException {
+        String string = "";
+        ByteBuffer buffer;
+        long startPosition = random.nextLong(channel.size() - 1);
+
+        while (!string.equals("\n") && startPosition > 0) {
+            buffer = ByteBuffer.allocate(1);
+            channel.read(buffer, startPosition--);
+            string = new String(buffer.array(), StandardCharsets.UTF_8);
         }
-        scanner.close();
-        return result;
+
+        startPosition = startPosition != 0 ? startPosition + 2 : startPosition;
+
+        buffer = ByteBuffer.allocate(maxLineLength);
+        channel.read(buffer, startPosition);
+
+        return new String(buffer.array(), StandardCharsets.UTF_8).split("\n")[0];
     }
 }
