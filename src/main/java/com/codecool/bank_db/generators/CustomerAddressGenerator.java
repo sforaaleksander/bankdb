@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.util.Random;
 
 public class CustomerAddressGenerator extends DataGenerator {
-    private Random r = new Random();
+    private final Random random = new Random();
     private CustomerGenerator customerGenerator;
     private AddressGenerator addressGenerator;
 
@@ -29,13 +29,13 @@ public class CustomerAddressGenerator extends DataGenerator {
             int customer_id = getCustomerID();
             int address_id = getAddressID();
             int address_type_id = 2; // create zameldowania address
-            String defaultString = String.format("insert into customers_addresses(customer_id, address_id, address_type_id)" +
-                    " values (%d, %d, %d);\n", customer_id, address_id, address_type_id);
+            String defaultString = String.format("insert into customers_addresses(customer_id, address_id, address_type_id)"
+                    + " values (%d, %d, %d);\n", customer_id, address_id, address_type_id);
             writer.println(defaultString);
             if (addressGenerator.getAvailableIndexes().isEmpty()) {
                 break;
             }
-            if (r.nextInt(100) < 25) { // create additional korespondencyjny address
+            if (random.nextInt(100) < 25) { // create additional korespondencyjny address
                 int second_address_id = getAddressID();
                 int second_address_type_id = 1;
                 String additionalAddress = String.format("insert into customers_addresses(customer_id, address_id, address_type_id)" +
