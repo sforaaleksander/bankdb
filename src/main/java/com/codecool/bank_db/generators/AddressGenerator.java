@@ -2,6 +2,7 @@ package com.codecool.bank_db.generators;
 
 import com.codecool.bank_db.file_handlers.RandomLineProvider;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,9 +11,9 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AddressGenerator extends UniqueDataGenerator {
-    private RandomLineProvider randomLineProvider;
+    private final RandomLineProvider randomLineProvider;
 
-    public AddressGenerator(Integer recordCount) {
+    public AddressGenerator(Integer recordCount) throws IOException {
         super(recordCount);
         randomLineProvider = new RandomLineProvider("src/main/resources/streets.txt");
     }
@@ -22,7 +23,11 @@ public class AddressGenerator extends UniqueDataGenerator {
         Set<String> inserts = new HashSet<>(recordCount);
 
         while (inserts.size() < recordCount) {
-            inserts.add(generateOne());
+            try {
+                inserts.add(generateOne());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         for (String insert : inserts) {
@@ -31,7 +36,7 @@ public class AddressGenerator extends UniqueDataGenerator {
         }
     }
 
-    private String generateOne() {
+    private String generateOne() throws IOException {
         final Map<Integer, String[]> cities = new HashMap<>();
         cities.put(1, new String[]{"Wrocław", "Wałbrzych"});
         cities.put(2, new String[]{"Bydgoszcz", "Toruń"});
