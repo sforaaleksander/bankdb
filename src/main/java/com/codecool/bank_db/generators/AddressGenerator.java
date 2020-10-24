@@ -22,21 +22,19 @@ public class AddressGenerator extends UniqueDataGenerator {
     public void generate(PrintWriter writer) {
         Set<String> inserts = new HashSet<>(recordCount);
 
+        String insert;
         while (inserts.size() < recordCount) {
             try {
-                inserts.add(generateOne());
+                insert = generateOne(inserts);
+                inserts.add(insert);
+                writer.println(insert + "\n");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        for (String insert : inserts) {
-            writer.println(insert);
-            writer.println("\n");
-        }
     }
 
-    private String generateOne() throws IOException {
+    private String generateOne(Set<String> inserts) throws IOException {
         final Map<Integer, String[]> cities = new HashMap<>();
         cities.put(1, new String[]{"Wrocław", "Wałbrzych"});
         cities.put(2, new String[]{"Bydgoszcz", "Toruń"});
@@ -64,7 +62,8 @@ public class AddressGenerator extends UniqueDataGenerator {
         String number = random.nextInt(0, 100) + "/" + random.nextInt(0, 200);
         String postcode = String.format("%05d", random.nextInt(1, 100_000));
 
-        return String.format("insert into addresses(street, number, city, postcode, province_id)\n" +
+        String insert = String.format("insert into addresses(street, number, city, postcode, province_id)\n" +
                 "values ('%s', '%s', '%s', '%s', %s);", street, number, city, postcode, provinceId);
+        return inserts.contains(insert) ? generateOne(inserts) : insert;
     }
 }
