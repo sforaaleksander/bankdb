@@ -5,6 +5,8 @@ import com.codecool.bank_db.generators.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 
 public class FileWriter {
     public void collectGeneratedInsertsToFile() throws IOException {
@@ -56,8 +58,12 @@ public class FileWriter {
         PrintWriter writer = new PrintWriter("db_populate.sql", StandardCharsets.UTF_8);
 
         for (DataGenerator generator : generators) {
+            Instant start = Instant.now();
+
             generator.generate(writer);
 
+            Instant end = Instant.now();
+            System.out.println(generator.getClass().getSimpleName() + " took " + Duration.between(start, end));
         }
         writer.println("");
         writer.close();

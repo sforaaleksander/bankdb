@@ -4,18 +4,18 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CardGenerator extends UniqueDataGenerator {
-    private Random r;
+    private final ThreadLocalRandom random;
     private LinkedList<Long> setOfCardNumbers;
     private AccountGenerator accountGenerator;
     private AtmGenerator atmGenerator;
 
     public CardGenerator(Integer recordCount) {
         super(recordCount);
-        r = new Random();
+        random = ThreadLocalRandom.current();
     }
 
     public void setAccountGenerator(AccountGenerator accountGenerator) {
@@ -43,11 +43,47 @@ public class CardGenerator extends UniqueDataGenerator {
             String defaultString = String.format("insert into cards(account_id, pin_code, start_date, expire_date, card_number, cvv_code, is_active)" +
                     " values (%d, '%s', '%s', '%s', '%s', '%s', %b);\n", account_id, pin_code, start_date, expire_date, card_number, cvv_code, is_active);
             writer.print(defaultString);
-            for (int i = 1; i < getRandomNumberInRange(5, 30); i++){
+            for (int i = 1; i < random.nextInt(5, 31); i++) {
                 writer.print(createTransactions(account_id, pseudoCardSerial, start_date, expire_date, transactionId));
                 transactionId++;
             }
         }
+    }
+
+    private int getAccountId() {
+        return accountGenerator.getAvailableIndexes().poll();
+    }
+
+    private String getPinCode() {
+        return String.format("%04d", random.nextInt(10000));
+    }
+
+    private String getStartDate() {
+        long offset = Timestamp.valueOf("2010-01-01 00:00:00").getTime();
+        long end = Timestamp.valueOf("2020-01-01 00:00:00").getTime();
+        Timestamp rand = new Timestamp(random.nextLong(offset, end));
+        return rand.toString();
+    }
+
+    private String getExpireDate(String start_date) {
+        long dateOfStart = Timestamp.valueOf(start_date).getTime();
+        long offset = Timestamp.valueOf("2012-01-01 00:00:00").getTime();
+        long end = Timestamp.valueOf("2013-01-01 00:00:00").getTime();
+        long diff = end - offset;
+        Timestamp dateOfExpire = new Timestamp(dateOfStart + 4 * diff);
+        return dateOfExpire.toString();
+    }
+
+    private String getCardNumber() {
+        return String.valueOf(setOfCardNumbers.poll());
+    }
+
+    private String getCvv() {
+        return String.format("%03d", random.nextInt(1000));
+    }
+
+    private boolean getIsActive() {
+        return random.nextInt(111) < 100;
     }
 
     private String createTransactions(int accountID, int pseudoCardSerial, String startDate, String expireDate, int transactionId) { //todo transfer = 1 / card_payment = 2 / atm_transaction = 3
@@ -69,10 +105,37 @@ public class CardGenerator extends UniqueDataGenerator {
         return finalString.toString();
     }
 
-    private String createAtmTransaction(int transactionID, int cardID) {
-        int atmID = getRandomNumberInRange(1, atmGenerator.getRecordCount());
-        return String.format("insert into atm_transactions(transaction_id, card_id, atm_id)" +
-                " values (%d, %d, %d);\n", transactionID, cardID, atmID);
+    private int getTransactionType() {
+        return random.nextInt(3) + 1;
+    }
+
+    private String getTransactionDate(String startDate, String expireDate) {
+        long offset = Timestamp.valueOf(startDate).getTime();
+        long end = Timestamp.valueOf(expireDate).getTime();
+        Timestamp rand = new Timestamp(random.nextLong(offset, end));
+        return rand.toString();
+    }
+
+    private int getAmount(int transactionType) {
+        if (transactionType == 3) { // transfer = 1 / card_payment = 2 / atm_transaction = 3
+            int randomAmount = random.nextInt(-1000000, 1000001);
+            return randomAmount - randomAmount % 1000;
+        }
+        return random.nextInt(-1000000, -99);
+    }
+
+    private String createTransfer(int transactionID, int doNotUseThisAccountID, String transactionDate) {
+        int recipientAccountID;
+        do {
+            recipientAccountID = random.nextInt(1, accountGenerator.getRecordCount() + 1);
+        } while (recipientAccountID == doNotUseThisAccountID);
+        String title = generateRandomTitle(transactionDate, recipientAccountID, doNotUseThisAccountID, transactionID);// max 100 characters
+        return String.format("insert into transfers(transaction_id, recipient_account_id, title)" +
+                " values (%d, %d, '%s');\n", transactionID, recipientAccountID, title);
+    }
+
+    private String generateRandomTitle(String transactionDate, int recipientAccountID, int doNotUseThisAccountID, int transactionID) {
+        return String.format("t-%s-from-%d-to-%d-on-%s", transactionID, doNotUseThisAccountID, recipientAccountID, transactionDate);
     }
 
     private String createCardPayment(int transactionID, int cardID) {
@@ -82,104 +145,24 @@ public class CardGenerator extends UniqueDataGenerator {
     }
 
     private String generateRandomRecipient() {
-        int randomNr = getRandomNumberInRange(100_000, 999_999);
-        return String.format("random-recipient-%d", randomNr);
+        return String.format("random-recipient-%d", random.nextInt(100_000, 1_000_000));
     }
 
-    private String createTransfer(int transactionID, int doNotUseThisAccountID, String transactionDate) {
-        int recipientAccountID = getRandomNumberInRange(1, accountGenerator.getRecordCount());
-        while (recipientAccountID == doNotUseThisAccountID) {
-            recipientAccountID = getRandomNumberInRange(1, accountGenerator.getRecordCount());
-        }
-        String title = generateRandomTitle(transactionDate, recipientAccountID, doNotUseThisAccountID, transactionID);// max 100 znakow
-        return String.format("insert into transfers(transaction_id, recipient_account_id, title)" +
-                " values (%d, %d, '%s');\n", transactionID, recipientAccountID, title);
-    }
-
-    private String generateRandomTitle(String transactionDate, int recipientAccountID, int doNotUseThisAccountID, int transactionID) {
-        return String.format("t-%s-from-%d-to-%d-on-%s", transactionID, doNotUseThisAccountID, recipientAccountID, transactionDate);
-    }
-
-    private int getAmount(int transactionType) {
-        if (transactionType == 3) { // transfer = 1 / card_payment = 2 / atm_transaction = 3
-            int randomAmount = getRandomNumberInRange(-1000000, 1000000);
-            return randomAmount - randomAmount % 1000;
-        }
-        return getRandomNumberInRange(-1000000, -100);
-    }
-
-    private String getTransactionDate(String startDate, String expireDate) {
-        long offset = Timestamp.valueOf(startDate).getTime();
-        long end = Timestamp.valueOf(expireDate).getTime();
-        long diff = end - offset;
-        Timestamp rand = new Timestamp(offset + (long) (Math.random() * diff));
-        return rand.toString();
-    }
-
-    private int getTransactionType() {
-        int randomInt = r.nextInt(99);
-        if (randomInt < 33) {
-            return 1;
-        } else if (randomInt < 66) {
-            return 2;
-        }
-        return 3;
+    private String createAtmTransaction(int transactionID, int cardID) {
+        int atmID = random.nextInt(1, atmGenerator.getRecordCount() + 1);
+        return String.format("insert into atm_transactions(transaction_id, card_id, atm_id)" +
+                " values (%d, %d, %d);\n", transactionID, cardID, atmID);
     }
 
     public void setSetOfCardNumbers() {
         Set<Long> cardNumbers = new HashSet<>();
         while (cardNumbers.size() <= accountGenerator.getRecordCount()) {
-            cardNumbers.add(getLongNumber());
+            cardNumbers.add(getRandomCardNumber());
         }
         this.setOfCardNumbers = new LinkedList<>(cardNumbers);
     }
 
-    private String getCardNumber() {
-        Long number = setOfCardNumbers.poll();
-        return String.valueOf(number);
-    }
-
-    private String getExpireDate(String start_date) {
-        long dateOfStart = Timestamp.valueOf(start_date).getTime();
-        long offset = Timestamp.valueOf("2012-01-01 00:00:00").getTime();
-        long end = Timestamp.valueOf("2013-01-01 00:00:00").getTime();
-        long diff = end - offset;
-        Timestamp dateOfExpire = new Timestamp(dateOfStart + 4 * diff);
-        return dateOfExpire.toString();
-    }
-
-    private String getStartDate() {
-        long offset = Timestamp.valueOf("2010-01-01 00:00:00").getTime();
-        long end = Timestamp.valueOf("2020-01-01 00:00:00").getTime();
-        long diff = end - offset + 1;
-        Timestamp rand = new Timestamp(offset + (long) (Math.random() * diff));
-        return rand.toString();
-    }
-
-    private int getAccountId() {
-        return accountGenerator.getAvailableIndexes().poll();
-    }
-
-    private boolean getIsActive() {
-        return r.nextInt(111) < 100;
-    }
-
-    private String getCvv() {
-        return String.valueOf(getRandomNumberInRange(111, 999));
-    }
-
-    private String getPinCode() {
-        return String.valueOf(r.nextInt(10)) + r.nextInt(10) + (r.nextInt(10)) + (r.nextInt(10));
-    }
-
-    private int getRandomNumberInRange(int min, int max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
-        return r.nextInt((max - min) + 1) + min;
-    }
-
-    private long getLongNumber() {
-        return 6400000000000000L + (r.nextLong() % 100000000000000L);
+    private long getRandomCardNumber() {
+        return random.nextLong(6400000000000000L, 6500000000000000L);
     }
 }
